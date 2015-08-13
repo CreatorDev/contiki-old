@@ -29,44 +29,41 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* TODO: add documentation */
-#include <contiki.h>
-#include <clock.h>
-#include <pic32.h>
-#include <pic32_clock.h>
-#include <dev/watchdog.h>
-#include <platform-init.h>
-
+#include "platform-init.h"
+#include <p32xxxx.h>
+#include <pic32_irq.h>
 
 /*---------------------------------------------------------------------------*/
-int
-main(int argc, char **argv)
+void
+platform_init()
 {
-  int32_t r;
+  /* Disable interrupts */
+  ASM_DIS_INT;
 
-  pic32_init();
-  watchdog_init();
-  clock_init();
-  platform_init();
+  /* Unlock sequence */
+  SYSKEY = 0;
+  SYSKEY = 0xaa996655;
+  SYSKEY = 0x556699aa;
+  CFGCONbits.IOLOCK=0;
 
-  process_init();
-  process_start(&etimer_process, NULL);
-  ctimer_init();
-  rtimer_init();
+  /* Configure remappable pins */
 
-  autostart_start(autostart_processes);
-  watchdog_start();
+  /* Uart1 Rx : RPF4 */
+  TRISFSET = _TRISF_TRISF4_MASK;
+  U1RXR = 0b0010;
 
-  while(1) {
-    do {
-      watchdog_periodic();
-      r = process_run();
-    } while(r > 0);
-    watchdog_stop();
-    asm volatile("wait");
-    watchdog_start();
-  }
+  /* Uart1 Tx : RPF5 */
+  TRISFCLR = _TRISF_TRISF5_MASK;
+  RPF5R = 0b0011;
 
-  return 0;
+  /* TODO : Configure SPI and other pins */
+
+  /* Lock again */
+  CFGCONbits.IOLOCK=1;
+  SYSKEY = 0;
+
+  /* Enable interrupts */
+  ASM_EN_INT;
 }
+
 /*---------------------------------------------------------------------------*/

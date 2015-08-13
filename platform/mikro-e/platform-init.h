@@ -29,44 +29,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* TODO: add documentation */
-#include <contiki.h>
-#include <clock.h>
-#include <pic32.h>
-#include <pic32_clock.h>
-#include <dev/watchdog.h>
-#include <platform-init.h>
+#ifndef PLATFORM_INIT_H
+#define PLATFORM_INIT_H
 
+void platform_init();
 
-/*---------------------------------------------------------------------------*/
-int
-main(int argc, char **argv)
-{
-  int32_t r;
-
-  pic32_init();
-  watchdog_init();
-  clock_init();
-  platform_init();
-
-  process_init();
-  process_start(&etimer_process, NULL);
-  ctimer_init();
-  rtimer_init();
-
-  autostart_start(autostart_processes);
-  watchdog_start();
-
-  while(1) {
-    do {
-      watchdog_periodic();
-      r = process_run();
-    } while(r > 0);
-    watchdog_stop();
-    asm volatile("wait");
-    watchdog_start();
-  }
-
-  return 0;
-}
-/*---------------------------------------------------------------------------*/
+#endif /* PLATFORM_INIT_H */
