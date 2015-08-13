@@ -36,7 +36,9 @@
 #include <pic32_clock.h>
 #include <dev/watchdog.h>
 #include <platform-init.h>
+#include <debug-uart.h>
 
+#define UART_DEBUG_BAUDRATE 115200
 
 /*---------------------------------------------------------------------------*/
 int
@@ -53,6 +55,8 @@ main(int argc, char **argv)
   process_start(&etimer_process, NULL);
   ctimer_init();
   rtimer_init();
+
+  dbg_setup_uart(UART_DEBUG_BAUDRATE);
 
   autostart_start(autostart_processes);
   watchdog_start();
