@@ -152,7 +152,6 @@ void cc2520_set_cca_threshold(int value);
     SPI_WRITE_FAST(CC2520_INS_TXBUF);                                   \
     for(i = 0; i < (count); i++) {                                      \
       SPI_WRITE_FAST(((uint8_t *)(buffer))[i]);                         \
-      SPI_WAITFORTxREADY();                                             \
     }                                                                   \
     SPI_WAITFORTx_ENDED();                                              \
     CC2520_SPI_DISABLE();                                               \
