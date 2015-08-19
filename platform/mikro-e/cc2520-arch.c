@@ -29,68 +29,58 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* TODO: add documentation */
-#include <contiki.h>
-#include <clock.h>
-#include <pic32.h>
-#include <pic32_clock.h>
-#include <dev/watchdog.h>
-#include <platform-init.h>
-#include <debug-uart.h>
-#include <pic32_irq.h>
-#include <dev/cc2520/cc2520.h>
-
-#define UART_DEBUG_BAUDRATE 115200
+#include "contiki.h"
+#include "pic32_irq.h"
+#include "pic32_spi.h"
 
 /*---------------------------------------------------------------------------*/
+/* Definition for disable interrupt method used in cc2520.c */
 int
-main(int argc, char **argv)
-{
-  int32_t r;
-
-  pic32_init();
-  watchdog_init();
-  clock_init();
-  platform_init();
-
-  process_init();
-  process_start(&etimer_process, NULL);
-  ctimer_init();
-  rtimer_init();
-
-  dbg_setup_uart(UART_DEBUG_BAUDRATE);
-
-  autostart_start(autostart_processes);
-  watchdog_start();
-
-  while(1) {
-    do {
-      watchdog_periodic();
-      r = process_run();
-    } while(r > 0);
-    watchdog_stop();
-    asm volatile("wait");
-    watchdog_start();
-  }
-
+splhigh() {
+  ASM_DIS_INT;
   return 0;
 }
+
 /*---------------------------------------------------------------------------*/
-ISR(_CHANGE_NOTICE_VECTOR) {
-  if (CC2520_FIFOP_INT_IS_1) {
-    /*
-     * Need to check FIFOP pin to detect rising or falling edge as change
-     * notification interrupt is generated for each value change irrespective
-     * of falling or leading edge and cc2520_interrupt() needs to be called
-     * only for rising edge.
-     */
-    if (CC2520_FIFOP_IS_1) {
-      /* For rising edge */
-      cc2520_interrupt();
-    } else {
-      /* For falling edge */
-      CC2520_CLEAR_FIFOP_INT();
-    }
-  }
+/* Definition for enable interrupt method used in cc2520.c */
+void
+splx(int s) {
+  ASM_EN_INT;
+}
+
+/*---------------------------------------------------------------------------*/
+void
+cc2520_arch_init(void)
+{
+  /* Initialise CC2520-SPI port */
+  pic32_spi2_init(CC2520_SPI_BAUDRATE, SPI_DEFAULT);
+
+  /* Configure CC2520 Chip select pin */
+  GPIO_CONFIGURE_AS_OUTPUT(CC2520_CS_PORT, CC2520_CS_PIN);
+  CC2520_SPI_DISABLE();
+
+  /* Configure CC2520 Voltage regulator enable pin */
+  GPIO_CONFIGURE_AS_OUTPUT(CC2520_VREG_PORT, CC2520_VREG_PIN);
+  SET_VREG_INACTIVE();
+
+  /* Configure CC2520 reset pin */
+  GPIO_CONFIGURE_AS_DIGITAL(CC2520_RESET_PORT, CC2520_RESET_PIN);
+  GPIO_CONFIGURE_AS_OUTPUT(CC2520_RESET_PORT, CC2520_RESET_PIN);
+  SET_RESET_INACTIVE();
+
+  /* Configure CC2520 FIFOP pin */
+  GPIO_CONFIGURE_AS_DIGITAL(CC2520_FIFOP_PORT, CC2520_FIFOP_PIN);
+  GPIO_CONFIGURE_AS_INPUT(CC2520_FIFOP_PORT, CC2520_FIFOP_PIN);
+
+  /* Configure CC2520 FIFO pin */
+  GPIO_CONFIGURE_AS_DIGITAL(CC2520_FIFO_PORT, CC2520_FIFO_PIN);
+  GPIO_CONFIGURE_AS_INPUT(CC2520_FIFO_PORT, CC2520_FIFO_PIN);
+
+  /* Configure CC2520 CCA pin */
+  GPIO_CONFIGURE_AS_INPUT(CC2520_CCA_PORT, CC2520_CCA_PIN);
+
+  /* Configure CC2520 SFD pin */
+  GPIO_CONFIGURE_AS_INPUT(CC2520_SFD_PORT, CC2520_SFD_PIN);
+
 }
 /*---------------------------------------------------------------------------*/

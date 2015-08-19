@@ -33,6 +33,7 @@
 #define CONTIKI_CONF_H
 
 #include <inttypes.h>
+#include "cc2520-conf.h"
 
 #define CCIF
 #define CLIF
@@ -43,5 +44,9 @@ typedef uint32_t rtimer_clock_t;
 #define RTIMER_CLOCK_LT(a,b) ((int32_t)((a)-(b)) < 0)
 
 #define CLOCK_CONF_SECOND                       1024
+
+#define NETSTACK_CONF_WITH_IPV6                 1
+#define NETSTACK_CONF_RADIO                     cc2520_driver
+#define NETSTACK_CONF_NETWORK                   sicslowpan_driver
 
 #endif /* CONTIKI_CONF_H */
