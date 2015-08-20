@@ -39,6 +39,7 @@
 #include <debug-uart.h>
 #include <pic32_irq.h>
 #include <dev/cc2520/cc2520.h>
+#include <net-init.h>
 
 #define UART_DEBUG_BAUDRATE 115200
 
@@ -59,6 +60,7 @@ main(int argc, char **argv)
   rtimer_init();
 
   dbg_setup_uart(UART_DEBUG_BAUDRATE);
+  net_init();
 
   autostart_start(autostart_processes);
   watchdog_start();
