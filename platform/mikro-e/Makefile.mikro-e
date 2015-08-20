@@ -16,10 +16,14 @@ CONTIKI_PLAT_DEFS += -D __USE_SPI__
 CONTIKI_PLAT_DEFS += -D __USE_SPI_PORT2__
 
 CONTIKI_TARGET_SOURCEFILES = contiki-mikro-e-main.c leds-arch.c platform-init.c \
-                             cc2520-arch.c
+                             cc2520-arch.c net-init.c
 
 MODULES += dev/cc2520 core/net core/net/mac core/net/llsec
 
 CONTIKI_SOURCEFILES += $(CONTIKI_TARGET_SOURCEFILES)
+
+ifdef NODE_ID
+  CFLAGS += -DNODE_ID=${NODE_ID}
+endif
 
 include $(CONTIKI)/cpu/pic32/Makefile.pic32
