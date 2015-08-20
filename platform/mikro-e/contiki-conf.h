@@ -47,6 +47,36 @@ typedef uint32_t rtimer_clock_t;
 
 #define NETSTACK_CONF_WITH_IPV6                 1
 #define NETSTACK_CONF_RADIO                     cc2520_driver
+#define NETSTACK_CONF_FRAMER                    framer_802154
+#define NETSTACK_CONF_RDC                       nullrdc_driver
+#define NETSTACK_CONF_MAC                       nullmac_driver
 #define NETSTACK_CONF_NETWORK                   sicslowpan_driver
+#define RF_CHANNEL                              13
+#define IEEE802154_PANID                        0xABCD
+
+#define UIP_CONF_ROUTER                         0
+#define LINKADDR_CONF_SIZE                      8
+#define UIP_CONF_BUFFER_SIZE                    1024
+
+
+/* UDP configuration options */
+#define UIP_CONF_UDP                            1
+#define UIP_CONF_UDP_CHECKSUMS                  1
+#define UIP_CONF_UDP_CONNS                      10
+
+/* 6lowpan options (for ipv6) */
+#define SICSLOWPAN_CONF_COMPRESSION             SICSLOWPAN_COMPRESSION_HC06
+#define SICSLOWPAN_CONF_MAX_ADDR_CONTEXTS       2
+#define SICSLOWPAN_CONF_COMPRESSION_THRESHOLD   63
+#define SICSLOWPAN_CONF_FRAG                    1
+#define SICSLOWPAN_CONF_MAXAGE                  8
+
+
+/* General uip configuration options */
+#define UIP_CONF_STATISTICS                     0
+#define UIP_CONF_LOGGING                        0
+#define UIP_CONF_BROADCAST                      1
+#define UIP_CONF_LLH_LEN                        0
+#define UIP_CONF_LL_802154                      1
 
 #endif /* CONTIKI_CONF_H */
