@@ -79,4 +79,9 @@ typedef uint32_t rtimer_clock_t;
 #define UIP_CONF_LLH_LEN                        0
 #define UIP_CONF_LL_802154                      1
 
+/* Include project config file if defined in the project Makefile */
+#ifdef PROJECT_CONF_H
+  #include "project-conf.h"
+#endif /* PROJECT_CONF_H */
+
 #endif /* CONTIKI_CONF_H */
