@@ -40,6 +40,7 @@
 #include <pic32_irq.h>
 #include <dev/cc2520/cc2520.h>
 #include <net-init.h>
+#include <leds.h>
 
 #define UART_DEBUG_BAUDRATE 115200
 
@@ -52,6 +53,7 @@ main(int argc, char **argv)
   pic32_init();
   watchdog_init();
   clock_init();
+  leds_init();
   platform_init();
 
   process_init();
