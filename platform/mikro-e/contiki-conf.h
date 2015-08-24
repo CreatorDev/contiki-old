@@ -79,6 +79,14 @@ typedef uint32_t rtimer_clock_t;
 #define UIP_CONF_LLH_LEN                        0
 #define UIP_CONF_LL_802154                      1
 
+
+/*
+ * There are 2 red LEDs on the board, LED1 is mapped to the Contiki LEDS_RED
+ * and LED2 is mapped to LEDS_GREEN
+ */
+#define LED1                                    LEDS_RED
+#define LED2                                    LEDS_GREEN
+
 /* Include project config file if defined in the project Makefile */
 #ifdef PROJECT_CONF_H
   #include "project-conf.h"
