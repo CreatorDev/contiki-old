@@ -48,6 +48,15 @@ platform_init()
 
   /* Configure remappable pins */
 
+  /* Uart2 Tx : RPD11 */
+  TRISDCLR = _TRISD_TRISD11_MASK;
+  RPD11R = 0b0001;
+
+  /* Uart2 Rx : RPB9 */
+  ANSELBCLR = _ANSELB_ANSB9_MASK;
+  TRISBSET = _TRISB_TRISB9_MASK;
+  U2RXR = 0b0101;
+
   /* Uart3 Tx : RPF4 */
   TRISFCLR = _TRISF_TRISF4_MASK;
   RPF4R = 0b0001;
