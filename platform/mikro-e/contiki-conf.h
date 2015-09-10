@@ -51,7 +51,7 @@ typedef uint32_t rtimer_clock_t;
 #define NETSTACK_CONF_RDC                       nullrdc_driver
 #define NETSTACK_CONF_MAC                       nullmac_driver
 #define NETSTACK_CONF_NETWORK                   sicslowpan_driver
-#define RF_CHANNEL                              13
+#define RF_CHANNEL                              26
 #define IEEE802154_PANID                        0xABCD
 
 #define UIP_CONF_ROUTER                         0
