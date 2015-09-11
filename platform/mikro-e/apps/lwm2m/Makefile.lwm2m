@@ -1,0 +1,43 @@
+# Download path
+SOURCE_PATH = http://imgsysart01.hh.imgtec.org/artifactory/release/lwm2m-contiki-0.0.4-external.tgz
+
+# Commandline tools
+CP = cp
+CP_DIR_OPTION = -r
+MKDIR = mkdir
+RM = rm -rf
+UNTAR = tar -xvf
+TOUCH = touch
+WGET = wget
+
+# LWM2M library path
+LWM2M_PATH = $(CONTIKI)/platform/mikro-e/apps/lwm2m
+LWM2M_LIB_PATH = $(LWM2M_PATH)/lib
+LWM2M_INCLUDE_PATH = $(LWM2M_PATH)/include
+
+# Add includes
+CFLAGS += -I$(CONTIKI)/apps/rest-engine -I$(LWM2M_INCLUDE_PATH) -I$(LWM2M_INCLUDE_PATH)/client
+
+# Add libraries
+TARGET_LIBFILES += $(LWM2M_LIB_PATH)/lwm2m-client.a $(LWM2M_LIB_PATH)/rest-engine.a contiki-mikro-e.a
+
+# Get LWM2M package
+lwm2m: $(LWM2M_PATH)/.stamp_downloaded
+
+$(LWM2M_PATH)/.stamp_downloaded:
+# Download and extract the code
+	$(WGET) $(SOURCE_PATH) -O lwm2m-app.tgz
+	$(MKDIR) lwm2m-app
+	$(UNTAR) lwm2m-app.tgz -C lwm2m-app/
+
+# Create lib and include folders and place required libraries and headers in them
+	$(MKDIR) $(LWM2M_PATH)/lib $(LWM2M_PATH)/include
+	$(CP) lwm2m-app/lib/contiki/rest-engine.a $(LWM2M_LIB_PATH)/
+	$(CP) lwm2m-app/lib/lwm2m/lwm2m-client.a $(LWM2M_LIB_PATH)/
+	$(CP) $(CP_DIR_OPTION) lwm2m-app/lib/lwm2m/include/* $(LWM2M_INCLUDE_PATH)/
+
+# Clean downloaded tar file and extracted files
+	$(RM) lwm2m-app lwm2m-app.tgz
+
+# Create stamp file to know that the package has been downloaded
+	$(TOUCH) $(LWM2M_PATH)/.stamp_downloaded
