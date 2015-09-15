@@ -74,10 +74,17 @@
 #define BUTTON_RESOURCE_ID            5560
 #define BUTTON_RESOURCE_INSTANCE_ID   0
 
+#define BUTTON_PRESS_PERIOD           2  /* seconds */
+
 static int button = 0;
 PROCESS(lwm2m_button_client, "LWM2M Button Client");
-AUTOSTART_PROCESSES(&lwm2m_button_client);
 
+#ifndef BUTTON_PRESS_SIMULATION
+AUTOSTART_PROCESSES(&lwm2m_button_client);
+#else
+PROCESS(button_press_simulator, "Button Press Simulator");
+AUTOSTART_PROCESSES(&lwm2m_button_client, &button_press_simulator);
+#endif
 /*---------------------------------------------------------------------------*/
 static void
 register_button_object(ObjectStore *store)
@@ -149,5 +156,22 @@ PROCESS_THREAD(lwm2m_button_client, ev, data)
 
   PROCESS_END();
 }
+
+/*---------------------------------------------------------------------------*/
+#ifdef BUTTON_PRESS_SIMULATION
+PROCESS_THREAD(button_press_simulator, ev, data)
+{
+  PROCESS_BEGIN();
+  static struct etimer button_timer;
+  int wait_time = BUTTON_PRESS_PERIOD * CLOCK_SECOND;
+  etimer_set(&button_timer, wait_time);
+  while(1) {
+    PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&button_timer));
+    process_post(PROCESS_BROADCAST, sensors_event, (void *)&button1_sensor);
+    etimer_reset(&button_timer);
+  }
+  PROCESS_END();
+}
+#endif
 
 /*---------------------------------------------------------------------------*/

@@ -3,6 +3,9 @@ CONTIKI=../../..
 TARGET = mikro-e
 VERSION? = $(shell git describe --abbrev=4 --dirty --always --tags)
 
+# If periodic button presses need to be simulated, uncomment the following line
+# CFLAGS += -DBUTTON_PRESS_SIMULATION
+
 CFLAGS += -DVERSION=$(VERSION)
 CFLAGS += -Wall -Wno-pointer-sign
 CFLAGS += -I $(CONTIKI)/platform/$(TARGET)
