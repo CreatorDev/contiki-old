@@ -39,6 +39,7 @@
 #include <debug-uart.h>
 #include <pic32_irq.h>
 #include <dev/cc2520/cc2520.h>
+#include "dev/serial-line.h"
 #include <net-init.h>
 #include <leds.h>
 #include <sensors.h>
@@ -70,6 +71,9 @@ main(int argc, char **argv)
 
   dbg_setup_uart(UART_DEBUG_BAUDRATE);
   net_init();
+
+  uart3_set_input(serial_line_input_byte);
+  serial_line_init();
 
   autostart_start(autostart_processes);
   watchdog_start();
