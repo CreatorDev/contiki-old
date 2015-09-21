@@ -22,6 +22,11 @@ CPU_LIBS = $(notdir $(wildcard $(CONTIKI_CPU)/lib/*.c))
 
 CONTIKI_SOURCEFILES += pic32.c clock.c watchdog.c rtimer-arch.c $(CPU_LIBS) debug-uart.c slip-uart.c
 
+COFFEE_ADDRESS=0xBD070000
+
+CONTIKI_TARGET_SOURCEFILES += flash.c cfs-coffee-arch.c cfs-coffee.c 
+CFLAGS += -DCOFFEE_ADDRESS=$(COFFEE_ADDRESS)
+
 ### Compiler definitions
 CC       = xc32-gcc
 LD       = xc32-gcc
