@@ -1,0 +1,8 @@
+[gerrit]
+host=imgworks.imgtec.com
+port=29418
+project=systems/os/contiki
+defaultremote=origin
+defaultbranch=3.0-imgsystems
+defaultrebase=0
+defaultdraft=1
