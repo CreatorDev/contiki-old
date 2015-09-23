@@ -1,5 +1,5 @@
 # Download path
-SOURCE_PATH = http://imgsysart01.hh.imgtec.org/artifactory/release/lwm2m-contiki-0.0.4-external.tgz
+SOURCE_PATH = http://imgsysart01.hh.imgtec.org/artifactory/release/lwm2m-contiki-external-0.0.7.tgz
 
 # Commandline tools
 CP = cp
