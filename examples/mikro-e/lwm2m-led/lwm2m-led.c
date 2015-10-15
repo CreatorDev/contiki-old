@@ -1,4 +1,14 @@
 /**
+ * @addtogroup apps
+ * @{
+ *
+ * @defgroup lwm2m-led LightWeightM2M Led Application
+ * @{
+ *
+ * This Application registers an led object and communicates with the LWM2M
+ * server daemon running on Marduk gateway. LED resource that it hosts can be
+ * turned on or off through Marduk gateway.
+ *
  * @file
  * LightWeightM2M Led Client
  *
@@ -60,6 +70,7 @@
 #include "lwm2m_object_defs.h"
 #include "lwm2m_types.h"
 
+//! @cond Doxygen_Suppress
 #define BOOTSTRAP_SERVER_URL      "coap://[fe80::1]:15685"
 #define COAP_PORT                 6000
 #define ENDPOINT_NAME             "LedDevice"
@@ -75,8 +86,11 @@
 static int led_state = 0;
 PROCESS(lwm2m_led_client, "LWM2M Led Client");
 AUTOSTART_PROCESSES(&lwm2m_led_client);
-
+//! @endcond
 /*---------------------------------------------------------------------------*/
+/**
+ * @brief Register the led object to the lwm2m server
+ */
 static void
 register_led_object(ObjectStore *store)
 {
@@ -88,6 +102,9 @@ register_led_object(ObjectStore *store)
 }
 
 /*---------------------------------------------------------------------------*/
+/**
+ * @brief Set led resource value
+ */
 static void
 setup_led_object(ObjectStore *store)
 {
@@ -97,6 +114,10 @@ setup_led_object(ObjectStore *store)
 }
 
 /*---------------------------------------------------------------------------*/
+/**
+ * @brief Turn on/off led according to the state of the led resource of LWM2M
+ *        object which can be updated by LWM2M server running on Marduk gateway.
+ */
 static void
 update_led_state(ObjectStore *store)
 {
@@ -111,6 +132,10 @@ update_led_state(ObjectStore *store)
 }
 
 /*---------------------------------------------------------------------------*/
+/**
+ * @brief Initialize the coap server, bootstrap the device and register the
+ *        led object
+ */
 static Lwm2mContextType*
 lwm2m_client_start()
 {
@@ -134,6 +159,11 @@ lwm2m_client_start()
 }
 
 /*---------------------------------------------------------------------------*/
+/**
+ * @brief Application process that hosts an led object and turns on/off an led
+ *        on the board according to the state of the led object, which can
+ *        be set using LWM2M protocol.
+ */
 PROCESS_THREAD(lwm2m_led_client, ev, data)
 {
   PROCESS_BEGIN();
@@ -153,3 +183,6 @@ PROCESS_THREAD(lwm2m_led_client, ev, data)
 }
 
 /*---------------------------------------------------------------------------*/
+
+/** @} */
+/** @} */

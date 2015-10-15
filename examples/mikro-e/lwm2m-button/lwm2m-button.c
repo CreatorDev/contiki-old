@@ -1,4 +1,14 @@
 /**
+ * @addtogroup apps
+ * @{
+ *
+ * @defgroup lwm2m-button LightWeightM2M Button Application
+ * @{
+ *
+ * This Application registers a button object and communicates with the LWM2M
+ * server daemon running on Marduk gateway. It sends button-press events to its
+ * observers (Marduk gateway) using LWM2M protocol.
+ *
  * @file
  * LightWeightM2M Button Client
  *
@@ -61,6 +71,7 @@
 #include "lwm2m_object_defs.h"
 #include "lwm2m_types.h"
 
+//! @cond Doxygen_Suppress
 #define BOOTSTRAP_SERVER_URL          "coap://[fe80::1]:15685"
 #define COAP_PORT                     6000
 #define ENDPOINT_NAME                 "ButtonDevice"
@@ -85,7 +96,12 @@ AUTOSTART_PROCESSES(&lwm2m_button_client);
 PROCESS(button_press_simulator, "Button Press Simulator");
 AUTOSTART_PROCESSES(&lwm2m_button_client, &button_press_simulator);
 #endif
+
+//! @endcond
 /*---------------------------------------------------------------------------*/
+/**
+ * @brief Register the button object to the lwm2m server
+ */
 static void
 register_button_object(ObjectStore *store)
 {
@@ -97,6 +113,9 @@ register_button_object(ObjectStore *store)
 }
 
 /*---------------------------------------------------------------------------*/
+/**
+ * @brief Set button resource value
+ */
 static void
 setup_button_object(ObjectStore *store)
 {
@@ -106,6 +125,10 @@ setup_button_object(ObjectStore *store)
 }
 
 /*---------------------------------------------------------------------------*/
+/**
+ * @brief Initialize the coap server, bootstrap the device and register the
+ *        button object
+ */
 static Lwm2mContextType*
 lwm2m_client_start()
 {
@@ -118,6 +141,7 @@ lwm2m_client_start()
 
   /* Construct Object Tree */
   Lwm2m_Debug("Construct object tree\n");
+
   Lwm2m_RegisterObjectTypes(context->Store);
   register_button_object(context->Store);
 
@@ -129,6 +153,10 @@ lwm2m_client_start()
 }
 
 /*---------------------------------------------------------------------------*/
+/**
+ * @brief Application process that hosts a button object and notifies
+ *        the observers whenever a button is pressed
+ */
 PROCESS_THREAD(lwm2m_button_client, ev, data)
 {
   PROCESS_BEGIN();
@@ -159,6 +187,9 @@ PROCESS_THREAD(lwm2m_button_client, ev, data)
 
 /*---------------------------------------------------------------------------*/
 #ifdef BUTTON_PRESS_SIMULATION
+/**
+ * @brief Simulate button presses periodically (required for automated testing).
+ */
 PROCESS_THREAD(button_press_simulator, ev, data)
 {
   PROCESS_BEGIN();
@@ -175,3 +206,6 @@ PROCESS_THREAD(button_press_simulator, ev, data)
 #endif
 
 /*---------------------------------------------------------------------------*/
+
+/** @} */
+/** @} */

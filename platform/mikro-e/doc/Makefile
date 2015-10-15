@@ -1,8 +1,8 @@
 # Doxyfile configuration variables
 export docdir	:= .
 export picdir	:= ./pics
-export docsrc	:= ./mainpage.dox
 export docroot	:= ../../../
+export docsrc	:= ./mainpage.dox $(docroot)/examples/mikro-e
 
 
 .PHONY: clean html
