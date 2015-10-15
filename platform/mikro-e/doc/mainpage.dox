@@ -1,3 +1,4 @@
+/* doxygen index page */
 /** @mainpage Using Contiki on Mikro-E Clicker
 @section overview Overview
 
@@ -7,7 +8,7 @@ This section explains how to build Contiki code for Mikro-E Clicker and to flash
 
 | Revision  | Changes from previous revision |
 | :----     | :------------------------------|
-| 0.1.0     | Initial release                |
+| $(VERSION)| Initial release                |
 
 @section package_content Package Content
 
@@ -16,32 +17,22 @@ Some key paths where IMG have added source code to support Contiki on Mikro-E Cl
 | Folder                            | Content                                                                               |
 | :----                             | :----                                                                                 |
 | platform/mikro-e                  | Porting of drivers for peripherals like Button, LED, CC2520 etc. on Mikro-E Clicker   |
-| examples/mikro-e                  | Applications for Mikro-E Clicker board                                                |
-| platform/mikro-e/apps/lwm2m       | Flow LWM2M stack library for Mikro-E Clicker board                                    |
 
 
 @section getting_started_sec Getting started
-The xc32 compiler from Microchip can be used for compilation of the source code. Download the xc32 compiler from
+The xc32 compiler from Microchip can be used for compilation of the source code. Download the xc32 compiler v1.34 from
 <a href="http://www.microchip.com/pagehandler/en_us/devtools/mplabxc/">Microchip's website</a> and add tool chain path in the
 environment variables and compile an example, say "Hello World" which is included in Contiki as per below:
 
 @code
-$ export PATH=$PATH:/opt/microchip/xc32/v1.40/bin/
+$ export PATH=$PATH:/opt/microchip/xc32/v1.34/bin/
 @endcode
 
 The application e.g. Hello World can be built for Mikro-E Clicker and HEX file can be generated to flash on the board as per below:
 @code
 $ cd examples/hello-world
 $ make TARGET=mikro-e
-$ /opt/microchip/xc32/v1.40/bin/xc32-bin2hex hello-world.mikro-e
-@endcode
-
-The LWM2M example applications can be compiled and application HEX files can be generated as per below:
-@code
-$ cd examples/mikro-e/lwm2m-button
-$ make TARGET=mikro-e
-$ cd examples/mikro-e/lwm2m-led
-$ make TARGET=mikro-e
+$ /opt/microchip/xc32/v1.34/bin/xc32-bin2hex hello-world.mikro-e
 @endcode
 
 @section flashing_Mikro-E_clicker Flashing Mikro-E Clicker

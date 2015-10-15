@@ -1,9 +1,10 @@
 # Doxyfile configuration variables
 export docdir	:= .
 export picdir	:= ./pics
-export docsrc	:= ./mainpage.dox
-export docroot	:= ../../../
+export docroot	:= ../../../..
+export docsrc	:= .
 
+export VERSION	:= 0.2.0
 
 .PHONY: clean html
 

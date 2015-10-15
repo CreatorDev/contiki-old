@@ -10,8 +10,8 @@ GENERATE_LATEX         = NO
 #HAVE_DOT              = YES
 STRIP_FROM_PATH        = $(docroot)
 INPUT                  = $(docsrc)
-FILE_PATTERNS          = *.h \
-                         *.c
+FILE_PATTERNS          = *.c \
+                         *.dox
 RECURSIVE              = YES
 EXTRACT_STATIC         = YES
 HTML_STYLESHEET        = $(docdir)/doxygen.css
