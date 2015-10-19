@@ -1,0 +1,16 @@
+#imglogo {
+	padding-left:0px;
+	background: url(imgteclogo.png) no-repeat right center #770172;
+	height:80px;
+}
+#creatorlogo {
+	background: url(creatorlogo.png) no-repeat left center transparent;
+	display:block;
+	width:260px;
+	height:80px;
+}
+
+.copyright_footer {
+	margin-left: 10px;
+	color: #666666;
+}

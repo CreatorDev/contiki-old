@@ -1,0 +1,111 @@
+/** @mainpage Using Contiki on Mikro-E Clicker
+@section overview Overview
+
+This section explains how to build Contiki code for Mikro-E Clicker and to flash the compiled application image on Mikro-E Clicker.
+
+@section revision_history Revision History
+
+| Revision  | Changes from previous revision |
+| :----     | :------------------------------|
+| 0.1.0     | Initial release                |
+
+@section package_content Package Content
+
+Some key paths where IMG have added source code to support Contiki on Mikro-E Clicker:
+
+| Folder                            | Content                                                                               |
+| :----                             | :----                                                                                 |
+| platform/mikro-e                  | Porting of drivers for peripherals like Button, LED, CC2520 etc. on Mikro-E Clicker   |
+| examples/mikro-e                  | Applications for Mikro-E Clicker board                                                |
+| platform/mikro-e/apps/lwm2m       | Flow LWM2M stack library for Mikro-E Clicker board                                    |
+
+
+@section getting_started_sec Getting started
+The xc32 compiler from Microchip can be used for compilation of the source code. Download the xc32 compiler from
+<a href="http://www.microchip.com/pagehandler/en_us/devtools/mplabxc/">Microchip's website</a> and add tool chain path in the
+environment variables and compile an example, say "Hello World" which is included in Contiki as per below:
+
+@code
+$ export PATH=$PATH:/opt/microchip/xc32/v1.40/bin/
+@endcode
+
+The application e.g. Hello World can be built for Mikro-E Clicker and HEX file can be generated to flash on the board as per below:
+@code
+$ cd examples/hello-world
+$ make TARGET=mikro-e
+$ /opt/microchip/xc32/v1.40/bin/xc32-bin2hex hello-world.mikro-e
+@endcode
+
+The LWM2M example applications can be compiled and application HEX files can be generated as per below:
+@code
+$ cd examples/mikro-e/lwm2m-button
+$ make TARGET=mikro-e
+$ cd examples/mikro-e/lwm2m-led
+$ make TARGET=mikro-e
+@endcode
+
+@section flashing_Mikro-E_clicker Flashing Mikro-E Clicker
+The Mikro-E Clicker can be flashed using ICD 3 debugger.
+
+- The ICD 3 debugger pins needs to be connected to the mikroProg connector on the board are per below:
+  1. Pin 1 - RST
+  2. Pin 2 - 3.3V
+  3. Pin-3 - GND
+  4. Pin 4 - PGD
+  5. Pin 5 - PGC
+
+
+@image html icd_debugger_pin_orientation.png "ICD 3 Debugger Pin Orientation"
+
+@image html icd_debugger_connection.png "ICD 3 Debugger Connection"
+
+- Open MPLAB IPE and Select processor as PIC32MX470F512H and apply the settings.
+
+@image html mplab_ipe_apply.png "Processor Selection and Applying Settings"
+
+- Connect to the Mikro-E Clicker.
+
+@image html mplab_ipe_connect.png "Connection to Mikro-E Clicker"
+
+- Load the application HEX file using Browse button.
+- Flash by pressing "Program" Button.
+
+@section connecting_to_serial_port Connecting to Serial Port
+
+Use Brainstem Serial interface connector to connect to the RS232 cable.
+The pin layout for the connector can be found in <a href="https://acroname.com/sites/default/files/assets/s13-serial-int-conn_datasheet.pdf"> Brainstem's connector datasheet</a>.
+
+The connections are:
+  1. BrainStem GND to Click GND
+  2. BrainStem VCC to Click +5V
+  3. BrainStem RX to Click RF4/TX
+  4. BrainStem TX to Click RF5/RX
+
+@image html clicker_serial_connection.png "Mikro-E Clicker Serial Connection"
+
+There is another serial port available on the board behind battery holder which can be used for debugging if any click is connected to microbus. The following patch needs to be applied to get it working:
+
+@code
+--- Makefile.mikro-e
+2015-09-23 16:52:00.789694325 +0530
++++ platform/mikro-e/Makefile.mikro-e
+2015-09-07 18:31:18.717644709 +0530
+@@ -11,12 +11,12 @@ CONTIKI_PLAT_DEFS += -D __USE_TIMER_23__
+ CONTIKI_PLAT_DEFS += -D __USE_UART__
+ #If using RF4 and RF5 as uart pins for debug
+-#CONTIKI_PLAT_DEFS += -D __USE_UART_PORT3__
+-#CONTIKI_PLAT_DEFS += -D __USE_UART_PORT3_FOR_DEBUG__
++CONTIKI_PLAT_DEFS += -D __USE_UART_PORT3__
++CONTIKI_PLAT_DEFS += -D __USE_UART_PORT3_FOR_DEBUG__
+ #If using RB9 and RD11 as uart pins for debug
+-CONTIKI_PLAT_DEFS += -D __USE_UART_PORT2__
+-CONTIKI_PLAT_DEFS += -D __USE_UART_PORT2_FOR_DEBUG__
++#CONTIKI_PLAT_DEFS += -D __USE_UART_PORT2__
++#CONTIKI_PLAT_DEFS += -D __USE_UART_PORT2_FOR_DEBUG__
+ CONTIKI_PLAT_DEFS += -D __USE_SPI__
+ CONTIKI_PLAT_DEFS += -D __USE_SPI_PORT2__
+@endcode
+
+@image html clicker_second_serial_connection.png "Mikro-E Clicker Second Serial Connection"
+
+ */

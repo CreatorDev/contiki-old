@@ -1,0 +1,24 @@
+#---------------------------------------------------------------------------
+# Project related configuration options
+#---------------------------------------------------------------------------
+PROJECT_NAME           = "Creator Contiki"
+PROJECT_NUMBER         =
+JAVADOC_AUTOBRIEF      = YES
+HTML_HEADER            = $(docdir)/header.html
+HTML_FOOTER            = $(docdir)/footer.html
+GENERATE_LATEX         = NO
+#HAVE_DOT              = YES
+STRIP_FROM_PATH        = $(docroot)
+INPUT                  = $(docsrc)
+FILE_PATTERNS          = *.h \
+                         *.c
+RECURSIVE              = YES
+EXTRACT_STATIC         = YES
+HTML_STYLESHEET        = $(docdir)/doxygen.css
+HTML_EXTRA_STYLESHEET  = $(docdir)/creator.css
+HTML_EXTRA_FILES       = $(docdir)/tabs.css \
+                         $(docdir)/pics/imgteclogo.png \
+                         $(docdir)/pics/creatorlogo.png
+GENERATE_TAGFILE       = $(docdir)/tagfile
+USE_MDFILE_AS_MAINPAGE = @doxy_main_page@
+IMAGE_PATH             = $(docdir)/pics
