@@ -896,3 +896,25 @@ cc2520_set_cca_threshold(int value)
   RELEASE_LOCK();
 }
 /*---------------------------------------------------------------------------*/
+void
+cc2520_get_random(uint8_t *num, int count)
+{
+  uint8_t radio_was_off = 0;
+  if(locked) {
+    return;
+  }
+  GET_LOCK();
+  if(!receive_on) {
+    radio_was_off = 1;
+    RELEASE_LOCK();
+    cc2520_on();
+    GET_LOCK();
+  }
+  BUSYWAIT_UNTIL(status() & BV(CC2520_RSSI_VALID), RTIMER_SECOND);
+  CC2520_GET_RANDOM(num, count);
+  if(radio_was_off) {
+    cc2520_off();
+  }
+  RELEASE_LOCK();
+}
+/*---------------------------------------------------------------------------*/
