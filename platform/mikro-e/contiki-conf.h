@@ -53,6 +53,7 @@ typedef uint32_t rtimer_clock_t;
 #define NETSTACK_CONF_NETWORK                   sicslowpan_driver
 #define RF_CHANNEL                              26
 #define IEEE802154_PANID                        0xABCD
+//#define FIXED_MAC_ADDRESS                       0xDEADBEEFDEADBEEF
 
 #define UIP_CONF_ROUTER                         0
 #define LINKADDR_CONF_SIZE                      8
