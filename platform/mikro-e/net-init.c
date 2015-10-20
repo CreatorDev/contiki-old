@@ -40,10 +40,6 @@
 
 #include <dev/cc2520/cc2520.h>
 
-#ifndef NODE_ID
-#define NODE_ID 2
-#endif
-
 #define DEBUG 1
 #if DEBUG
 #include <stdio.h>
@@ -61,19 +57,20 @@ net_init()
   linkaddr_t addr;
   uip_ds6_addr_t *lladdr;
   uip_ipaddr_t ipaddr;
-  uint16_t node_id = NODE_ID;
   uint8_t i;
 
-  random_init(NODE_ID);
+  queuebuf_init();
+  cc2520_init();
+
   memset(&shortaddr, 0, sizeof(shortaddr));
   memset(&longaddr, 0, sizeof(longaddr));
-  *((uint8_t *)&shortaddr) = node_id >> 8;
-  *((uint8_t *)&shortaddr + 1) = node_id;
-  *((uint8_t *)&longaddr) = node_id >> 8;
-  *((uint8_t *)&longaddr + 1) = node_id;
-  for(i = 2; i < sizeof(longaddr); ++i) {
-    ((uint8_t *)&longaddr)[i] = random_rand();
-  }
+  #ifndef FIXED_MAC_ADDRESS
+  cc2520_get_random((uint8_t *)&longaddr, sizeof(longaddr));
+  #else
+  longaddr = FIXED_MAC_ADDRESS;
+  #endif
+  ((uint8_t *)&shortaddr)[0] = ((uint8_t *)&longaddr)[0];
+  ((uint8_t *)&shortaddr)[1] = ((uint8_t *)&longaddr)[1];
 
   memset(&addr, 0, sizeof(linkaddr_t));
   for(i = 0; i < sizeof(addr.u8); ++i) {
@@ -81,8 +78,6 @@ net_init()
   }
   linkaddr_set_node_addr(&addr);
 
-  queuebuf_init();
-  cc2520_init();
   cc2520_set_channel(RF_CHANNEL);
   cc2520_set_pan_addr(IEEE802154_PANID, shortaddr, (uint8_t *)&longaddr);
   NETSTACK_RDC.init();
