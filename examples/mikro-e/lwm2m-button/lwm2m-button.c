@@ -1,16 +1,15 @@
 /**
- * @addtogroup apps
+ * @addtogroup applications
  * @{
  *
- * @defgroup lwm2m-button LightWeightM2M Button Application
+ * @defgroup lwm2m_button_app LightWeightM2M Button Application
  * @{
  *
  * This Application registers a button object and communicates with the LWM2M
  * server daemon running on Marduk gateway. It sends button-press events to its
  * observers (Marduk gateway) using LWM2M protocol.
  *
- * @file
- * LightWeightM2M Button Client
+ * @file lwm2m-button.c
  *
  * @author Imagination Technologies
  *

@@ -1,3 +1,4 @@
+/* doxygen index page */
 /** @mainpage Using Contiki on Mikro-E Clicker
 @section overview Overview
 
@@ -7,7 +8,7 @@ This section explains how to build Contiki code for Mikro-E Clicker and to flash
 
 | Revision  | Changes from previous revision |
 | :----     | :------------------------------|
-| 0.1.0     | Initial release                |
+| $(VERSION)| Initial release                |
 
 @section package_content Package Content
 
@@ -34,14 +35,6 @@ The application e.g. Hello World can be built for Mikro-E Clicker and HEX file c
 $ cd examples/hello-world
 $ make TARGET=mikro-e
 $ /opt/microchip/xc32/v1.40/bin/xc32-bin2hex hello-world.mikro-e
-@endcode
-
-The LWM2M example applications can be compiled and application HEX files can be generated as per below:
-@code
-$ cd examples/mikro-e/lwm2m-button
-$ make TARGET=mikro-e
-$ cd examples/mikro-e/lwm2m-led
-$ make TARGET=mikro-e
 @endcode
 
 @section flashing_Mikro-E_clicker Flashing Mikro-E Clicker
@@ -107,5 +100,11 @@ There is another serial port available on the board behind battery holder which 
 @endcode
 
 @image html clicker_second_serial_connection.png "Mikro-E Clicker Second Serial Connection"
+
+@section lwm2m_example_app The LWM2M example applications
+
+- @ref lwm2m_button_app
+
+- @ref lwm2m_led_app
 
  */

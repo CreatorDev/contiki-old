@@ -2,8 +2,12 @@
 export docdir	:= .
 export picdir	:= ./pics
 export docroot	:= ../../../
-export docsrc	:= ./mainpage.dox $(docroot)/examples/mikro-e
+export docsrc	:= ./ \
+		    $(docroot)/examples/mikro-e
 
+export VERSION	:= 0.1.0
+export BUTTON_APP_VERSION := 0.1.0
+export LED_APP_VERSION	:= 0.1.0
 
 .PHONY: clean html
 

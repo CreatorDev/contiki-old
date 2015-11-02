@@ -1,0 +1,24 @@
+/** @page lwm2m_led_app The LWM2M LED application
+
+This page provides information about how to build the LWM2M LED application and how it communicates with
+LWM2M server daemon running on Marduk gateway.
+
+@section led_app_rev_history Revision History
+
+| Revision             | Changes from previous revision |
+| :--------------------| :------------------------------|
+| $(LED_APP_VERSION)   | Initial release                |
+
+
+@section led_app_design Design
+
+@image html lwm2m_led_app.png
+
+@section how_to_compile_led_app How To Compile
+@code
+$ cd examples/mikro-e/lwm2m-led
+$ make TARGET=mikro-e
+@endcode
+
+
+*/

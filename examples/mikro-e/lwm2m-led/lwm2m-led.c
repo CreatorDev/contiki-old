@@ -1,16 +1,15 @@
 /**
- * @addtogroup apps
+ * @addtogroup applications
  * @{
  *
- * @defgroup lwm2m-led LightWeightM2M Led Application
+ * @defgroup lwm2m_led_app LightWeightM2M Led Application
  * @{
  *
  * This Application registers an led object and communicates with the LWM2M
  * server daemon running on Marduk gateway. LED resource that it hosts can be
  * turned on or off through Marduk gateway.
  *
- * @file
- * LightWeightM2M Led Client
+ * @file lwm2m-led.c
  *
  * @author Imagination Technologies
  *
