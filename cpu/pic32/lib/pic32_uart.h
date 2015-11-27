@@ -77,7 +77,9 @@
 
 #define UART_PORT_DEF(XX)                                                \
   int8_t pic32_uart##XX##_init(uint32_t baudrate, uint16_t byte_format); \
-  int8_t pic32_uart##XX##_write(uint8_t data);
+  int8_t pic32_uart##XX##_write(uint8_t data);                           \
+  void uart##XX##_set_input(int (*input) (unsigned char c));             \
+  extern int (*uart##XX##_input_handler) (unsigned char c);
 
 #define UART_INTERRUPT(XX, YY, CALLBACK)                                 \
   ISR(_UART_##XX##_VECTOR)                                               \
@@ -85,7 +87,10 @@
     volatile uint8_t byte;                                               \
     if(IFS##YY##bits.U##XX##RXIF) {                                      \
       if((U##XX##STAbits.PERR == 0) && (U##XX##STAbits.FERR == 0)) {     \
-        CALLBACK(U##XX##RXREG);                                          \
+        byte = U##XX##RXREG;                                             \
+        if(uart##XX##_input_handler)                                     \
+          uart##XX##_input_handler(byte == 0x0d ? 0x0a : byte);          \
+        CALLBACK(byte);                                                  \
       } else {                                                           \
         byte = U##XX##RXREG; /* NULL READ */                             \
       }                                                                  \

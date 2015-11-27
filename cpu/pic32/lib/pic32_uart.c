@@ -122,8 +122,16 @@
     return UART_NO_ERROR;                                                                                       \
   }
 /*---------------------------------------------------------------------------*/
-#define UART_PORT(XX, YY)                        \
-                                                 \
+#define UART_PORT(XX, YY)                                          \
+                                                                   \
+  int (*uart##XX##_input_handler) (unsigned char c) = NULL;        \
+                                                                   \
+  void                                                             \
+  uart##XX##_set_input(int (*input) (unsigned char c))             \
+  {                                                                \
+    uart##XX##_input_handler = input;                              \
+  }                                                                \
+                                                                   \
   int8_t                                         \
   pic32_uart##XX##_write(uint8_t data)           \
   {                                              \
