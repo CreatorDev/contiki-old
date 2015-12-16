@@ -68,17 +68,17 @@ void splx(int s);
 
 /* Pin configuration */
 
-/* RE6 - Input: FIFOP from CC2520 */
-#define CC2520_FIFOP_PORT   E
-#define CC2520_FIFOP_PIN    6
+/* RD5 - Input: FIFOP from CC2520 */
+#define CC2520_FIFOP_PORT   D
+#define CC2520_FIFOP_PIN    5
 
 /* RB4 - Input: FIFO from CC2520 */
 #define CC2520_FIFO_PORT    B
 #define CC2520_FIFO_PIN     4
 
-/* RD5 - Input: CCA from CC2520 */
-#define CC2520_CCA_PORT     D
-#define CC2520_CCA_PIN      5
+/* RE6 - Input: CCA from CC2520 */
+#define CC2520_CCA_PORT     E
+#define CC2520_CCA_PIN      6
 
 /* RE1 - Input: SFD from CC2520 */
 #define CC2520_SFD_PORT     E
@@ -141,30 +141,28 @@ void splx(int s);
 /* CC2520 change notice interrupt on FIFOP pin (RE6) */
 #define CC2520_FIFOP_INT_INIT()                                         \
   do {                                                                  \
-    CNCONESET = _CNCONE_ON_MASK;                                        \
-    IEC1SET = _IEC1_CNEIE_MASK;                                         \
-    IFS1CLR = _IFS1_CNEIF_MASK;                                         \
-    IPC8SET = (6 << _IPC8_CNIP_POSITION) | (0 << _IPC8_CNIS_POSITION);  \
-    (void)PORTE;                                                        \
+    IFS0CLR = _IFS0_INT1IF_MASK;                                        \
+    INTCONSET = _INTCON_INT1EP_MASK;                                    \
+    IPC1CLR = _IPC1_INT1IP_MASK | _IPC1_INT1IS_MASK;                        \
+    IPC1SET = (6 << _IPC1_INT1IP_POSITION) | (3 << _IPC1_INT1IS_POSITION);  \
   } while(0)
 
 #define CC2520_ENABLE_FIFOP_INT()                                       \
   do {                                                                  \
-    CNENESET = _CNENE_CNIEE6_MASK;                                      \
+    IFS0CLR = _IFS0_INT1IF_MASK;                                        \
+    IEC0SET = _IEC0_INT1IE_MASK;                                        \
   } while(0)
 
 #define CC2520_DISABLE_FIFOP_INT()                                      \
   do {                                                                  \
-    CNENECLR = _CNENE_CNIEE6_MASK;                                      \
+    IEC0CLR = _IEC0_INT1IE_MASK;                                        \
   } while(0)
 
 #define CC2520_CLEAR_FIFOP_INT()                                        \
   do {                                                                  \
-    (void)PORTE;                                                        \
-    IFS1CLR = _IFS1_CNEIF_MASK;                                         \
-    CNSTATECLR = _CNSTATE_CNSTATE6_MASK;                                \
+    IFS0CLR = _IFS0_INT1IF_MASK;                                        \
   } while(0)
 
-#define CC2520_FIFOP_INT_IS_1 (IFS1bits.CNEIF & CNSTATEbits.CNSTATE6)
+#define CC2520_FIFOP_INT_IS_1 (IFS0bits.INT1IF)
 
 #endif /* __CC2520_CONF_H__ */

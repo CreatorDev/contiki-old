@@ -91,32 +91,19 @@ main(int argc, char **argv)
   return 0;
 }
 /*---------------------------------------------------------------------------*/
-ISR(_CHANGE_NOTICE_VECTOR) {
-  /*
-   * Same ISR is called for cc2520 fifop signal, button1 and button2 press and
-   * change notifications on all other CNx pins. Hence other flags need to be
-   * checked to call the appropriate service routine.
-   */
-  if(CC2520_FIFOP_INT_IS_1) {
-    /*
-     * Need to check FIFOP pin to detect rising or falling edge as change
-     * notification interrupt is generated for each value change irrespective
-     * of falling or leading edge and cc2520_interrupt() needs to be called
-     * only for rising edge.
-     */
-    if(CC2520_FIFOP_IS_1) {
-      /* For rising edge */
-      cc2520_interrupt();
-    } else {
-      /* For falling edge */
-      CC2520_CLEAR_FIFOP_INT();
-    }
-  } else if(BUTTON1_CHECK_IRQ()) {
+ISR(_CHANGE_NOTICE_VECTOR)
+{
+  if(BUTTON1_CHECK_IRQ()) {
     /* Button1 was pressed */
     button1_isr();
   } else if(BUTTON2_CHECK_IRQ()) {
     /* Button2 was pressed */
     button2_isr();
   }
+}
+
+ISR(_EXTERNAL_1_VECTOR)
+{
+    cc2520_interrupt();
 }
 /*---------------------------------------------------------------------------*/
