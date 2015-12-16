@@ -84,6 +84,10 @@ platform_init()
   TRISGCLR = _TRISG_TRISG8_MASK;
   RPG8R = 0b0110;
 
+  /* INT1 for FIFOP: RD5 */
+  TRISDSET = _TRISD_TRISD5_MASK;
+  INT1R = 0b0110;
+
   /* Lock again */
   CFGCONbits.IOLOCK=1;
   SYSKEY = 0;
