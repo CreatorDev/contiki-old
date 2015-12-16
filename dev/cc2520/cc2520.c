@@ -337,6 +337,9 @@ cc2520_init(void)
   /* Change default values as recommended in the data sheet, */
   /* correlation threshold = 20, RX bandpass filter = 1.3uA.*/
 
+  setreg(CC2520_GPIOCTRL3, 0x28);
+  setreg(CC2520_GPIOCTRL2, 0x29);
+
   setreg(CC2520_TXCTRL,      0x94);
   setreg(CC2520_TXPOWER,     0x13);    // Output power 1 dBm
 
