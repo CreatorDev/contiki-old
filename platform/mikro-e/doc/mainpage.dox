@@ -50,6 +50,21 @@ The Mikro-E Clicker can be flashed using ICD 3 debugger.
 
 @image html icd_debugger_connection.png "ICD 3 Debugger Connection"
 
+
+The Mikro-E Clicker also can be flashed using
+<a href="http://www.microchip.com/DevelopmentTools/ProductDetails.aspx?PartNO=PG164130&utm_source=&utm_medium=MicroSolutions&utm_term=&utm_content=DevTools&utm_campaign=PICkit+3">PICKit 3 Programmer</a>
+
+Please ensure that 0-ohm resistors J3, J4 and J5 are installed on the PICkit side, not the mProg side.
+De-solder and move them if required.
+
+@image html pickit3_changes.png "Changes required to use PicKit 3"
+
+
+The PicKit3 can be connected to the clicker as per below:
+
+@image html pickit3_connection.png "PicKit3 Connection"
+
+
 - Open MPLAB IPE and Select processor as PIC32MX470F512H and apply the settings.
 
 @image html mplab_ipe_apply.png "Processor Selection and Applying Settings"
