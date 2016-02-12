@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, Imagination Technologies Limited and/or its
+ * Copyright (c) 2016, Imagination Technologies Limited and/or its
  * affiliated group companies.
  *
  * All rights reserved.
@@ -97,8 +97,8 @@ void button1_isr(void);
 /* Method to be called when button2 is pressed */
 void button2_isr(void);
 
-#define BUTTON1_SENSOR "Button1"
-#define BUTTON2_SENSOR "Button2"
-extern const struct sensors_sensor button1_sensor, button2_sensor;
+#define BUTTON_SENSOR "Button1"
+#define BUTTON_SENSOR2 "Button2"
+extern const struct sensors_sensor button_sensor, button_sensor2;
 
 #endif /* __BUTTON_SENSOR_H__ */

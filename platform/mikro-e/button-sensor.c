@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, Imagination Technologies Limited and/or its
+ * Copyright (c) 2016, Imagination Technologies Limited and/or its
  * affiliated group companies.
  *
  * All rights reserved.
@@ -67,13 +67,13 @@ static void button_isr(int button_id, const struct sensors_sensor *s)
 
 void button1_isr(void)
 {
-  button_isr(BUTTON1, &button1_sensor);
+  button_isr(BUTTON1, &button_sensor);
   BUTTON_CLEAR_IRQ(BUTTON1_PORT, BUTTON1_PIN);
 }
 /*---------------------------------------------------------------------------*/
 void button2_isr(void)
 {
-  button_isr(BUTTON2, &button2_sensor);
+  button_isr(BUTTON2, &button_sensor2);
   BUTTON_CLEAR_IRQ(BUTTON2_PORT, BUTTON2_PIN);
 }
 /*---------------------------------------------------------------------------*/
@@ -165,8 +165,8 @@ button2_status(int type)
   return buttons_status[BUTTON2];
 }
 /*---------------------------------------------------------------------------*/
-SENSORS_SENSOR(button1_sensor, BUTTON1_SENSOR, button1_value, button1_configure,
+SENSORS_SENSOR(button_sensor, BUTTON_SENSOR, button1_value, button1_configure,
   button1_status);
-SENSORS_SENSOR(button2_sensor, BUTTON2_SENSOR, button2_value, button2_configure,
+SENSORS_SENSOR(button_sensor2, BUTTON_SENSOR2, button2_value, button2_configure,
   button2_status);
 /*---------------------------------------------------------------------------*/
