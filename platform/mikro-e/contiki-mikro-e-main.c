@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, Imagination Technologies Limited and/or its
+ * Copyright (c) 2016, Imagination Technologies Limited and/or its
  * affiliated group companies.
  *
  * All rights reserved.
@@ -46,7 +46,7 @@
 #include "button-sensor.h"
 
 #define UART_DEBUG_BAUDRATE 115200
-SENSORS(&button1_sensor, &button2_sensor);
+SENSORS(&button_sensor, &button_sensor2);
 
 /*---------------------------------------------------------------------------*/
 int
@@ -66,8 +66,8 @@ main(int argc, char **argv)
   rtimer_init();
 
   process_start(&sensors_process, NULL);
-  SENSORS_ACTIVATE(button1_sensor);
-  SENSORS_ACTIVATE(button2_sensor);
+  SENSORS_ACTIVATE(button_sensor);
+  SENSORS_ACTIVATE(button_sensor2);
 
   dbg_setup_uart(UART_DEBUG_BAUDRATE);
   net_init();

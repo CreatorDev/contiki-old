@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, Imagination Technologies Limited and/or its
+ * Copyright (c) 2016, Imagination Technologies Limited and/or its
  * affiliated group companies.
  *
  * All rights reserved.
@@ -48,11 +48,11 @@ PROCESS_THREAD(test_button_process, ev, data)
   while(1) {
     printf("Wait for button press : %d\n", ++i);
     PROCESS_WAIT_EVENT_UNTIL((ev == sensors_event));
-    if (data == &button1_sensor)
+    if (data == &button_sensor)
       printf("Button1 press event received\n");
 
 
-    if (data == &button2_sensor)
+    if (data == &button_sensor2)
       printf("Button2 press event received\n");
   }
   PROCESS_END();
