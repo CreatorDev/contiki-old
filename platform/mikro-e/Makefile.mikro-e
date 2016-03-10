@@ -1,0 +1,35 @@
+ifndef CONTIKI
+  $(error CONTIKI not defined! You must specify where CONTIKI resides!)
+endif
+
+PIC32_MODEL=32MX470F512H
+
+CONTIKI_PLAT_DEFS += -D __USE_TIMER__
+CONTIKI_PLAT_DEFS += -D __USE_TIMER_1__ -D PIC32_TIMER_CLOCK=1
+CONTIKI_PLAT_DEFS += -D __USE_TIMER_23__ -D PIC32_TIMER_RTIMER=23
+
+CONTIKI_PLAT_DEFS += -D __USE_UART__
+
+#If using RF4 and RF5 as uart pins for debug
+CONTIKI_PLAT_DEFS += -D __USE_UART_PORT3__
+CONTIKI_PLAT_DEFS += -D __USE_UART_PORT3_FOR_DEBUG__
+
+#If using RB9 and RD11 as uart pins for debug
+#CONTIKI_PLAT_DEFS += -D __USE_UART_PORT2__
+#CONTIKI_PLAT_DEFS += -D __USE_UART_PORT2_FOR_DEBUG__
+
+CONTIKI_PLAT_DEFS += -D __USE_SPI__
+CONTIKI_PLAT_DEFS += -D __USE_SPI_PORT2__
+
+CONTIKI_TARGET_SOURCEFILES = contiki-mikro-e-main.c leds-arch.c platform-init.c \
+                             cc2520-arch.c net-init.c button-sensor.c serial-line.c
+
+MODULES += dev/cc2520 core/net core/net/mac core/net/llsec
+
+CONTIKI_SOURCEFILES += $(CONTIKI_TARGET_SOURCEFILES)
+
+ifdef NODE_ID
+  CFLAGS += -DNODE_ID=${NODE_ID}
+endif
+
+include $(CONTIKI)/cpu/pic32/Makefile.pic32

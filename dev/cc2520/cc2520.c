@@ -337,6 +337,9 @@ cc2520_init(void)
   /* Change default values as recommended in the data sheet, */
   /* correlation threshold = 20, RX bandpass filter = 1.3uA.*/
 
+  setreg(CC2520_GPIOCTRL3, 0x28);
+  setreg(CC2520_GPIOCTRL2, 0x29);
+
   setreg(CC2520_TXCTRL,      0x94);
   setreg(CC2520_TXPOWER,     0x13);    // Output power 1 dBm
 
@@ -893,6 +896,28 @@ cc2520_set_cca_threshold(int value)
 {
   GET_LOCK();
   setreg(CC2520_CCACTRL0, value & 0xff);
+  RELEASE_LOCK();
+}
+/*---------------------------------------------------------------------------*/
+void
+cc2520_get_random(uint8_t *num, int count)
+{
+  uint8_t radio_was_off = 0;
+  if(locked) {
+    return;
+  }
+  GET_LOCK();
+  if(!receive_on) {
+    radio_was_off = 1;
+    RELEASE_LOCK();
+    cc2520_on();
+    GET_LOCK();
+  }
+  BUSYWAIT_UNTIL(status() & BV(CC2520_RSSI_VALID), RTIMER_SECOND);
+  CC2520_GET_RANDOM(num, count);
+  if(radio_was_off) {
+    cc2520_off();
+  }
   RELEASE_LOCK();
 }
 /*---------------------------------------------------------------------------*/
