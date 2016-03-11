@@ -91,21 +91,33 @@
   int8_t pic32_spi##XX##_write(const uint8_t *data, uint32_t len);\
   int8_t pic32_spi##XX##_read(uint8_t *data, uint32_t len);
 
-#ifdef __USE_SPI_PORT1__
-SPI_DEF(1)
-#endif /* __USE_SPI_PORT1__ */
+#ifdef __32MX795F512L__
+  #ifdef __USE_SPI_PORT1__
+  SPI_DEF(1)
+  #endif /* __USE_SPI_PORT1__ */
 
-#ifdef __USE_SPI_PORT1A__
-SPI_DEF(1A)
-#endif /* __USE_SPI_PORT1A__ */
+  #ifdef __USE_SPI_PORT1A__
+  SPI_DEF(1A)
+  #endif /* __USE_SPI_PORT1A__ */
 
-#ifdef __USE_SPI_PORT2A__
-SPI_DEF(2A)
-#endif /* __USE_SPI_PORT2A__ */
+  #ifdef __USE_SPI_PORT2A__
+  SPI_DEF(2A)
+  #endif /* __USE_SPI_PORT2A__ */
 
-#ifdef __USE_SPI_PORT3A__
-SPI_DEF(3A)
-#endif /* __USE_SPI_PORT3A__ */
+  #ifdef __USE_SPI_PORT3A__
+  SPI_DEF(3A)
+  #endif /* __USE_SPI_PORT3A__ */
+#endif /* __32MX795F512L__ */
+
+#ifdef __32MX470F512H__
+  #ifdef __USE_SPI_PORT1__
+  SPI_DEF(1)
+  #endif /* __USE_SPI_PORT1__ */
+
+  #ifdef __USE_SPI_PORT2__
+  SPI_DEF(2)
+  #endif /* __USE_SPI_PORT2__ */
+#endif /* __32MX470F512H__ */
 
 #endif /* __USE_SPI__ */
 

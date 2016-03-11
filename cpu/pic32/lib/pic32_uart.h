@@ -77,7 +77,9 @@
 
 #define UART_PORT_DEF(XX)                                                \
   int8_t pic32_uart##XX##_init(uint32_t baudrate, uint16_t byte_format); \
-  int8_t pic32_uart##XX##_write(uint8_t data);
+  int8_t pic32_uart##XX##_write(uint8_t data);                           \
+  void uart##XX##_set_input(int (*input) (unsigned char c));             \
+  extern int (*uart##XX##_input_handler) (unsigned char c);
 
 #define UART_INTERRUPT(XX, YY, CALLBACK)                                 \
   ISR(_UART_##XX##_VECTOR)                                               \
@@ -85,7 +87,10 @@
     volatile uint8_t byte;                                               \
     if(IFS##YY##bits.U##XX##RXIF) {                                      \
       if((U##XX##STAbits.PERR == 0) && (U##XX##STAbits.FERR == 0)) {     \
-        CALLBACK(U##XX##RXREG);                                          \
+        byte = U##XX##RXREG;                                             \
+        if(uart##XX##_input_handler)                                     \
+          uart##XX##_input_handler(byte == 0x0d ? 0x0a : byte);          \
+        CALLBACK(byte);                                                  \
       } else {                                                           \
         byte = U##XX##RXREG; /* NULL READ */                             \
       }                                                                  \
@@ -96,29 +101,49 @@
     }                                                                    \
   }
 
-#ifdef __USE_UART_PORT1A__
-UART_PORT_DEF(1A)
-#endif /* __USE_UART_PORT1A__ */
+#ifdef __32MX795F512L__
+  #ifdef __USE_UART_PORT1A__
+  UART_PORT_DEF(1A)
+  #endif /* __USE_UART_PORT1A__ */
 
-#ifdef __USE_UART_PORT1B__
-UART_PORT_DEF(1B)
-#endif /* __USE_UART_PORT1B__ */
+  #ifdef __USE_UART_PORT1B__
+  UART_PORT_DEF(1B)
+  #endif /* __USE_UART_PORT1B__ */
 
-#ifdef __USE_UART_PORT2A__
-UART_PORT_DEF(2A)
-#endif /* __USE_UART_PORT2A__ */
+  #ifdef __USE_UART_PORT2A__
+  UART_PORT_DEF(2A)
+  #endif /* __USE_UART_PORT2A__ */
 
-#ifdef __USE_UART_PORT2B__
-UART_PORT_DEF(2B)
-#endif /* __USE_UART_PORT2B__ */
+  #ifdef __USE_UART_PORT2B__
+  UART_PORT_DEF(2B)
+  #endif /* __USE_UART_PORT2B__ */
 
-#ifdef __USE_UART_PORT3A__
-UART_PORT_DEF(3A)
-#endif /* __USE_UART_PORT3A__ */
+  #ifdef __USE_UART_PORT3A__
+  UART_PORT_DEF(3A)
+  #endif /* __USE_UART_PORT3A__ */
 
-#ifdef __USE_UART_PORT3B__
-UART_PORT_DEF(3B)
-#endif /* __USE_UART_PORT3B__ */
+  #ifdef __USE_UART_PORT3B__
+  UART_PORT_DEF(3B)
+  #endif /* __USE_UART_PORT3B__ */
+#endif /* __32MX795F512L__ */
+
+#ifdef __32MX470F512H__
+  #ifdef __USE_UART_PORT1__
+  UART_PORT_DEF(1)
+  #endif /* __USE_UART_PORT1__ */
+
+  #ifdef __USE_UART_PORT2__
+  UART_PORT_DEF(2)
+  #endif /* __USE_UART_PORT2__ */
+
+  #ifdef __USE_UART_PORT3__
+  UART_PORT_DEF(3)
+  #endif /* __USE_UART_PORT3__ */
+
+  #ifdef __USE_UART_PORT4__
+  UART_PORT_DEF(4)
+  #endif /* __USE_UART_PORT4__ */
+#endif /* __32MX470F512H__ */
 
 #endif /* __USE_UART__ */
 

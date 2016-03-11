@@ -58,11 +58,18 @@
 #define __SPI_CODE_TEST__  0
 
 #if __SPI_CODE_TEST__
-#define __USE_SPI__             1
-#define __USE_SPI_PORT1__       1
-#define __USE_SPI_PORT1A__      1
-#define __USE_SPI_PORT2A__      1
-#define __USE_SPI_PORT3A__      1
+  #ifdef __32MX795F512L__
+    #define __USE_SPI__             1
+    #define __USE_SPI_PORT1__       1
+    #define __USE_SPI_PORT1A__      1
+    #define __USE_SPI_PORT2A__      1
+    #define __USE_SPI_PORT3A__      1
+  #endif
+  #ifdef __32MX470F512H__
+    #define __USE_SPI__             1
+    #define __USE_SPI_PORT1__       1
+    #define __USE_SPI_PORT2__       1
+  #endif
 #endif /* __SPI_CODE_TEST__ */
 
 #ifdef __USE_SPI__
@@ -165,21 +172,33 @@
   }
 /*---------------------------------------------------------------------------*/
 
-#ifdef __USE_SPI_PORT1__
-SPI_PORT(1, 0)
-#endif /* __USE_SPI_PORT1__ */
+#ifdef __32MX795F512L__
+  #ifdef __USE_SPI_PORT1__
+  SPI_PORT(1, 0)
+  #endif /* __USE_SPI_PORT1__ */
 
-#ifdef __USE_SPI_PORT1A__
-SPI_PORT(1A, 0)
-#endif /* __USE_SPI_PORT1A__ */
+  #ifdef __USE_SPI_PORT1A__
+  SPI_PORT(1A, 0)
+  #endif /* __USE_SPI_PORT1A__ */
 
-#ifdef __USE_SPI_PORT2A__
-SPI_PORT(2A, 1)
-#endif /* __USE_SPI_PORT2A__ */
+  #ifdef __USE_SPI_PORT2A__
+  SPI_PORT(2A, 1)
+  #endif /* __USE_SPI_PORT2A__ */
 
-#ifdef __USE_SPI_PORT3A__
-SPI_PORT(3A, 1)
-#endif /* __USE_SPI_PORT3A__ */
+  #ifdef __USE_SPI_PORT3A__
+  SPI_PORT(3A, 1)
+  #endif /* __USE_SPI_PORT3A__ */
+#endif
+
+#ifdef __32MX470F512H__
+  #ifdef __USE_SPI_PORT1__
+  SPI_PORT(1, 1)
+  #endif /* __USE_SPI_PORT1__ */
+
+  #ifdef __USE_SPI_PORT2__
+  SPI_PORT(2, 1)
+  #endif /* __USE_SPI_PORT2__ */
+#endif
 
 #endif /* __USE_SPI__ */
 

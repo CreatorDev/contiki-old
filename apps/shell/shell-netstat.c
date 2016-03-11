@@ -40,6 +40,9 @@
 #include "shell.h"
 #include "contiki-net.h"
 
+#ifdef UIP_CONF_TCP
+#if UIP_CONF_TCP == 1
+
 static const char closed[] =   /*  "CLOSED",*/
 {0x43, 0x4c, 0x4f, 0x53, 0x45, 0x44, 0};
 static const char syn_rcvd[] = /*  "SYN-RCVD",*/
@@ -140,3 +143,6 @@ shell_netstat_init(void)
   shell_register_command(&netstat_command);
 }
 /*---------------------------------------------------------------------------*/
+
+#endif
+#endif

@@ -5,7 +5,10 @@
 # $Id: Makefile.pic32,v 1.0 2012/12/03 09:00:00 evilaliv3 Exp $
 #
 
-PIC32_MODEL=32MX795F512L
+ifndef PIC32_MODEL
+$(error PIC32_MODEL not defined for the platform)
+endif
+
 CFLAGS += -O1 -fno-strict-aliasing -G7 -Wall -I /opt/microchip/xc32/v1.11/pic32mx/include/ $(CONTIKI_PLAT_DEFS)
 CFLAGS += -ffunction-sections
 
@@ -18,6 +21,11 @@ CONTIKI_CPU_DIRS = . lib
 CPU_LIBS = $(notdir $(wildcard $(CONTIKI_CPU)/lib/*.c))
 
 CONTIKI_SOURCEFILES += pic32.c clock.c watchdog.c rtimer-arch.c $(CPU_LIBS) debug-uart.c slip-uart.c
+
+COFFEE_ADDRESS=0xBD070000
+
+CONTIKI_TARGET_SOURCEFILES += flash.c cfs-coffee-arch.c cfs-coffee.c 
+CFLAGS += -DCOFFEE_ADDRESS=$(COFFEE_ADDRESS)
 
 ### Compiler definitions
 CC       = xc32-gcc
