@@ -252,6 +252,7 @@ main(int argc, char **argv)
   printf("RPL enabled\n");
 #endif
 
+  serial_line_init();
   procinit_init();
   autostart_start(autostart_processes); 
 
