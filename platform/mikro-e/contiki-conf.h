@@ -62,8 +62,8 @@ typedef uint32_t rtimer_clock_t;
 #ifndef RF_CHANNEL
   #define RF_CHANNEL                            26
 #endif
-#ifndef IEEE802154_PANID
-  #define IEEE802154_PANID                      0xABCD
+#ifndef IEEE802154_CONF_PANID
+  #define IEEE802154_CONF_PANID                 0xABCD
 #endif
 //#define FIXED_MAC_ADDRESS                     0xDEADBEEFDEADBEEF
 
