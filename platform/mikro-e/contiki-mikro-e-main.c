@@ -96,7 +96,6 @@ ISR(_CHANGE_NOTICE_VECTOR)
 {
   if(BUTTON1_CHECK_IRQ()) {
     /* Button1 was pressed */
-    shell_variable++;
     button1_isr();
   } else if(BUTTON2_CHECK_IRQ()) {
     /* Button2 was pressed */
