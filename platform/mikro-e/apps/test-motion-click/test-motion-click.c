@@ -29,86 +29,44 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* TODO: add documentation */
+/**
+ * \file
+ * 	A test application for motion-click.
+ * 	http://www.mikroe.com/click/motion/
+ *
+ */
+
 #include <contiki.h>
-#include <clock.h>
-#include <pic32.h>
-#include <pic32_clock.h>
-#include <dev/watchdog.h>
-#include <platform-init.h>
-#include <debug-uart.h>
-#include <pic32_irq.h>
-#include <dev/cc2520/cc2520.h>
-#include "dev/serial-line.h"
-#include <net-init.h>
-#include <leds.h>
-#include <sensors.h>
-#include "button-sensor.h"
+#include <stdio.h>
+#include <lib/sensors.h>
 #include "motion-click.h"
-
-#define UART_DEBUG_BAUDRATE 115200
-SENSORS(&button_sensor, &button_sensor2, &motion_sensor);
-
+#include "dev/leds.h"
+#include "sys/clock.h"
 /*---------------------------------------------------------------------------*/
-int
-main(int argc, char **argv)
+PROCESS(test_motion, "Motion click test");
+AUTOSTART_PROCESSES(&test_motion);
+/*---------------------------------------------------------------------------*/
+PROCESS_THREAD(test_motion, ev, data)
 {
-  int32_t r = 0;
- 
-  pic32_init();
-  watchdog_init();
-  clock_init();
-  leds_init();
-  platform_init();
-
-  process_init();
-  process_start(&etimer_process, NULL);
-  ctimer_init();
-  rtimer_init();
-
-  process_start(&sensors_process, NULL);
-  SENSORS_ACTIVATE(button_sensor);
-  SENSORS_ACTIVATE(button_sensor2);
-
-  dbg_setup_uart(UART_DEBUG_BAUDRATE);
-  net_init();
-
-  uart3_set_input(serial_line_input_byte);
-  serial_line_init();
-  
-  autostart_start(autostart_processes);
-  watchdog_start();
-  
+  PROCESS_EXITHANDLER(goto exit;)
+  PROCESS_BEGIN();
+  static int i;
+ // static struct etimer timer;
+  SENSORS_ACTIVATE(motion_sensor);
   while(1) {
-    do {
-      watchdog_periodic();
-      r = process_run();
-    } while(r > 0);
-    watchdog_stop();
-    asm volatile("wait");
-    watchdog_start();
+    PROCESS_WAIT_EVENT_UNTIL((ev == sensors_event));
+    if (data == &motion_sensor) {
+      printf("Motion event received\n");
+      leds_on(LEDS_ALL);
+      /* Delay for 500ms */
+      for(i=0;i<=500;++i) {
+      clock_delay_usec(1000);
+      }
+      leds_off(LEDS_ALL);
+    }
   }
-  
-  return 0;
-}
-/*---------------------------------------------------------------------------*/
-ISR(_CHANGE_NOTICE_VECTOR)
-{
-  if(BUTTON1_CHECK_IRQ()) {
-    /* Button1 was pressed */
-    shell_variable++;
-    button1_isr();
-  } else if(BUTTON2_CHECK_IRQ()) {
-    /* Button2 was pressed */
-    button2_isr();
-  } else if(MOTION_SENSOR_CHECK_IRQ()) {
-    /* Motion was detected */
-    motion_sensor_isr();
-  }
-}
-
-ISR(_EXTERNAL_1_VECTOR)
-{
-    cc2520_interrupt();
+  exit:
+  SENSORS_DEACTIVATE(motion_sensor);
+  PROCESS_END();
 }
 /*---------------------------------------------------------------------------*/
