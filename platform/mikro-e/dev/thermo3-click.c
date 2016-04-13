@@ -129,9 +129,9 @@ float tmp102_read_temp(void)
     temp_c += ((float) data[0]); 
   }
   if((data[0] & 0x80) == 0x80) {
-     data[0] = data[0] - 0x01;
-     data[0] = ~data[0];
-     temp_c = temp_c - ((float) data[0]);
+    data[0] = data[0] - 0x01;
+    data[0] = ~data[0];
+    temp_c = temp_c - ((float) data[0]);
   }
   return temp_c;
 }
