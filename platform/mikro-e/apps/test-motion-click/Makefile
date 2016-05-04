@@ -4,9 +4,7 @@ ifndef TARGET
 TARGET=mikro-e
 endif
 
-CONTIKI = ../../../../
-
-CFLAGS += -I $(CONTIKI)/platform/mikro-e/
+CONTIKI = ../../../..
 
 APPS += dev
 
