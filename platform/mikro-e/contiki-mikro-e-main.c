@@ -54,7 +54,7 @@ int
 main(int argc, char **argv)
 {
   int32_t r = 0;
- 
+
   pic32_init();
   watchdog_init();
   clock_init();
@@ -75,10 +75,10 @@ main(int argc, char **argv)
 
   uart3_set_input(serial_line_input_byte);
   serial_line_init();
-  
+
   autostart_start(autostart_processes);
   watchdog_start();
-  
+
   while(1) {
     do {
       watchdog_periodic();
@@ -88,7 +88,7 @@ main(int argc, char **argv)
     asm volatile("wait");
     watchdog_start();
   }
-  
+
   return 0;
 }
 /*---------------------------------------------------------------------------*/
@@ -108,6 +108,6 @@ ISR(_CHANGE_NOTICE_VECTOR)
 
 ISR(_EXTERNAL_1_VECTOR)
 {
-    cc2520_interrupt();
+  cc2520_interrupt();
 }
 /*---------------------------------------------------------------------------*/
