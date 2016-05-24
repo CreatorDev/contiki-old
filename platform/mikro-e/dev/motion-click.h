@@ -44,43 +44,46 @@
 #define MOTION_SENSOR_PIN       0
 
 /* To initialize interrupt on Motion detected */
-#define MOTION_SENSOR_IRQ_INIT() __MOTION_SENSOR_IRQ_INIT()
-#define __MOTION_SENSOR_IRQ_INIT()                                      \
-  do {                                                                  \
-    CNCONDSET = _CNCOND_ON_MASK;                                        \
-    IEC1SET = _IEC1_CNDIE_MASK;                                         \
-    IFS1CLR = _IFS1_CNDIF_MASK;                                         \
-    IPC8SET = (6 << _IPC8_CNIP_POSITION) | (0 << _IPC8_CNIS_POSITION);  \
-    (void)PORTD;                                                        \
+#define MOTION_SENSOR_IRQ_INIT(port) __MOTION_SENSOR_IRQ_INIT(port)
+#define __MOTION_SENSOR_IRQ_INIT(port)                                         \
+  do {                                                                         \
+    CNCON##port##SET = _CNCON##port##_ON_MASK;                                 \
+    IEC1SET = _IEC1_CN##port##IE_MASK;                                         \
+    IFS1CLR = _IFS1_CN##port##IF_MASK;                                         \
+    IPC8SET = (6 << _IPC8_CNIP_POSITION) | (0 << _IPC8_CNIS_POSITION);         \
+    (void)PORT##port;                                                          \
   } while(0)
 
 /* To enable Motion sensor interupt */
-#define MOTION_SENSOR_IRQ_ENABLE() __MOTION_SENSOR_IRQ_ENABLE()
-#define __MOTION_SENSOR_IRQ_ENABLE()                                    \
-  do {                                                                  \
-    CNENDSET = _CNEND_CNIED0_MASK;                                      \
+#define MOTION_SENSOR_IRQ_ENABLE(port, pin) __MOTION_SENSOR_IRQ_ENABLE(port, pin)
+#define __MOTION_SENSOR_IRQ_ENABLE(port, pin)                                  \
+  do {                                                                         \
+    CNEN##port##SET = _CNEND_CNIE##port##pin##_MASK;                           \
   } while(0)
 
 /* To disable Motion sensor interupt */
-#define MOTION_SENSOR_IRQ_DISABLE() __MOTION_SENSOR_IRQ_DISABLE()
-#define __MOTION_SENSOR_IRQ_DISABLE()                                   \
-  do {                                                                  \
-    CNENDCLR = _CNEND_CNIED0_MASK;                                      \
+#define MOTION_SENSOR_IRQ_DISABLE(port, pin) __MOTION_SENSOR_IRQ_DISABLE(port, pin)
+#define __MOTION_SENSOR_IRQ_DISABLE(port, pin)                                \
+  do {                                                                        \
+    CNEN##port##CLR = _CNEN##port##_CNIE##port##pin##_MASK;                   \
   } while(0)
 
 /* To clear interupt */
-#define MOTION_SENSOR_CLEAR_IRQ() __MOTION_SENSOR_CLEAR_IRQ()
-#define __MOTION_SENSOR_CLEAR_IRQ()                                     \
-  do {                                                                  \
-    (void)PORTD;                                                        \
-    IFS1CLR = _IFS1_CNDIF_MASK;                                         \
-    CNSTATDCLR = _CNSTATD_CNSTATD0_MASK;                                \
+#define MOTION_SENSOR_CLEAR_IRQ(port, pin) __MOTION_SENSOR_CLEAR_IRQ(port, pin)
+#define __MOTION_SENSOR_CLEAR_IRQ(port, pin)                                  \
+  do {                                                                        \
+    (void)PORT##port;                                                         \
+    IFS1CLR = _IFS1_CN##port##IF_MASK;                                        \
+    CNSTAT##port##CLR = _CNSTAT##port##_CNSTAT##port##pin##_MASK;             \
   } while(0)
 
+/* To check status of IRQ */
+#define MOTION_SENSOR_IRQ_STATUS(port, pin) __MOTION_SENSOR_IRQ_STATUS(port, pin)
+#define __MOTION_SENSOR_IRQ_STATUS(port, pin)                                 \
+  (IFS1bits.CN##port##IF & CNSTAT##port##bits.CNSTAT##port##pin)
+
 /* Check if Motion was detected */
-#define MOTION_SENSOR_CHECK_IRQ() __MOTION_SENSOR_CHECK_IRQ()
-#define __MOTION_SENSOR_CHECK_IRQ()                                     \
-  (IFS1bits.CNDIF & CNSTATDbits.CNSTATD0)
+#define MOTION_SENSOR_CHECK_IRQ() MOTION_SENSOR_IRQ_STATUS(MOTION_SENSOR_PORT, MOTION_SENSOR_PIN)
 
 /* Method to be called when Motion is detected */
 void motion_sensor_isr(void);
