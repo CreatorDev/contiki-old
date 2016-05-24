@@ -43,14 +43,14 @@
 #include "motion-click.h"
 
 static struct timer debouncetimer;
-static int motion_sensor_status;
-static int motion_sensor_value;
+static int motion_sensor_mode;
+static int motion_sensor_state;
 /*---------------------------------------------------------------------------*/
 static void motion_sensor_read(const struct sensors_sensor *s)
 {
-  if (!motion_sensor_value) {
+  if (!motion_sensor_state) {
     if (timer_expired(&debouncetimer)) {
-    	motion_sensor_value = 1;
+    	motion_sensor_state = 1;
       /* Set a timer for 100ms to ignore false notifications */
        timer_set(&debouncetimer, CLOCK_SECOND / 10);
       /* Notify processes that Motion has been detected */
@@ -58,7 +58,7 @@ static void motion_sensor_read(const struct sensors_sensor *s)
     }
   } else {
     if (timer_expired(&debouncetimer)) {
-    	motion_sensor_value = 0;
+    	motion_sensor_state = 0;
       /* Set a timer for 100ms to ignore false notifications */
       timer_set(&debouncetimer, CLOCK_SECOND / 10);
     }
@@ -68,7 +68,7 @@ static void motion_sensor_read(const struct sensors_sensor *s)
 void motion_sensor_isr(void)
 {
   motion_sensor_read(&motion_sensor);
-  MOTION_SENSOR_CLEAR_IRQ();
+  MOTION_SENSOR_CLEAR_IRQ(MOTION_SENSOR_PORT, MOTION_SENSOR_PIN);
 }
 /*---------------------------------------------------------------------------*/
 static int
@@ -78,22 +78,22 @@ motion_sensor_configure(int type, int value)
     case SENSORS_HW_INIT:
       /* Configure gpio pins and initialize interrupt */
       GPIO_CONFIGURE_AS_INPUT(MOTION_SENSOR_PORT, MOTION_SENSOR_PIN);
-      MOTION_SENSOR_IRQ_INIT();
-      motion_sensor_value = 0;
+      MOTION_SENSOR_IRQ_INIT(MOTION_SENSOR_PORT);
+      motion_sensor_state = 0;
       return 1;
 
     case SENSORS_ACTIVE:
       if(value) {
-        if(!motion_sensor_status) {
-          /* Enable interrupt for button press */
+        if(!motion_sensor_mode) {
+          /* Enable interrupt for Motion sensor */
           timer_set(&debouncetimer, 0);
-          MOTION_SENSOR_IRQ_ENABLE();
-          motion_sensor_status = 1;
+          MOTION_SENSOR_IRQ_ENABLE(MOTION_SENSOR_PORT, MOTION_SENSOR_PIN);
+          motion_sensor_mode = 1;
         }
       } else {
-        /* Disable interrupt for button press */
-        MOTION_SENSOR_IRQ_DISABLE();
-        motion_sensor_status = 0;
+        /* Disable interrupt for Motion sensor */
+        MOTION_SENSOR_IRQ_DISABLE(MOTION_SENSOR_PORT, MOTION_SENSOR_PIN);
+        motion_sensor_mode = 0;
       }
       return 1;
 
@@ -103,17 +103,17 @@ motion_sensor_configure(int type, int value)
 }
 /*---------------------------------------------------------------------------*/
 static int
-motion_sensor_status1(int type)
+motion_sensor_status(int type)
 {
-  return motion_sensor_status;
+  return motion_sensor_mode;
 }
 /*---------------------------------------------------------------------------*/
 static int
-motion_sensor_value1(int type)
+motion_sensor_value(int type)
 {
-  return motion_sensor_value;
+  return motion_sensor_state;
 }
 /*---------------------------------------------------------------------------*/
-SENSORS_SENSOR(motion_sensor, MOTION_SENSOR, motion_sensor_value1, motion_sensor_configure,
-		motion_sensor_status1);
+SENSORS_SENSOR(motion_sensor, MOTION_SENSOR, motion_sensor_value, motion_sensor_configure,
+		motion_sensor_status);
 /*---------------------------------------------------------------------------*/
