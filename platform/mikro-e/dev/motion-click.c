@@ -39,7 +39,6 @@
  */
 
 #include <lib/sensors.h>
-#include <pic32_gpio.h>
 #include "motion-click.h"
 
 static struct timer debouncetimer;
@@ -68,7 +67,7 @@ static void motion_sensor_read(const struct sensors_sensor *s)
 void motion_sensor_isr(void)
 {
   motion_sensor_read(&motion_sensor);
-  MOTION_SENSOR_CLEAR_IRQ(MOTION_SENSOR_PORT, MOTION_SENSOR_PIN);
+  MOTION_SENSOR_CLEAR_IRQ();
 }
 /*---------------------------------------------------------------------------*/
 static int
@@ -77,8 +76,7 @@ motion_sensor_configure(int type, int value)
   switch(type) {
     case SENSORS_HW_INIT:
       /* Configure gpio pins and initialize interrupt */
-      GPIO_CONFIGURE_AS_INPUT(MOTION_SENSOR_PORT, MOTION_SENSOR_PIN);
-      MOTION_SENSOR_IRQ_INIT(MOTION_SENSOR_PORT);
+      MOTION_SENSOR_IRQ_INIT();
       motion_sensor_state = 0;
       return 1;
 
@@ -87,12 +85,12 @@ motion_sensor_configure(int type, int value)
         if(!motion_sensor_mode) {
           /* Enable interrupt for Motion sensor */
           timer_set(&debouncetimer, 0);
-          MOTION_SENSOR_IRQ_ENABLE(MOTION_SENSOR_PORT, MOTION_SENSOR_PIN);
+          MOTION_SENSOR_IRQ_ENABLE();
           motion_sensor_mode = 1;
         }
       } else {
         /* Disable interrupt for Motion sensor */
-        MOTION_SENSOR_IRQ_DISABLE(MOTION_SENSOR_PORT, MOTION_SENSOR_PIN);
+        MOTION_SENSOR_IRQ_DISABLE();
         motion_sensor_mode = 0;
       }
       return 1;
