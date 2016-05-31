@@ -41,15 +41,11 @@
 
 #include <pic32_gpio.h>
 
-/* Motion sensor is connected to pin RD0 */
-#define MOTION_SENSOR_PORT      D
-#define MOTION_SENSOR_PIN       0
-
 /* To initialize interrupt on Motion detected */
 #define MOTION_SENSOR_IRQ_INIT() __MOTION_SENSOR_IRQ_INIT()
 #define __MOTION_SENSOR_IRQ_INIT()                                      \
   do {                                                                  \
-    GPIO_CONFIGURE_AS_INPUT(MOTION_SENSOR_PORT, MOTION_SENSOR_PIN);     \
+    GPIO_CONFIGURE_AS_INPUT(D, 0);                                      \
     CNCONDSET = _CNCOND_ON_MASK;                                        \
     IEC1SET = _IEC1_CNDIE_MASK;                                         \
     IFS1CLR = _IFS1_CNDIF_MASK;                                         \
