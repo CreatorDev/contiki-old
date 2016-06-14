@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2015, Imagination Technologies Limited and/or its
  * affiliated group companies.
+ * Copyright (c) 2016, Cascoda Limited
  *
  * All rights reserved.
  *
@@ -32,8 +33,14 @@
 #ifndef CONTIKI_CONF_H
 #define CONTIKI_CONF_H
 
+#define DEBUG_HIGHER_LEVELS 0
+
 #include <inttypes.h>
-#include "cc2520-conf.h"
+#ifdef __USE_CC2520__
+  #include "cc2520-conf.h"
+#elif  __USE_CA8210__
+  #include "ca8210-conf.h"
+#endif
 
 /* Include project config file if defined in the project Makefile */
 #ifdef PROJECT_CONF_H
@@ -52,11 +59,25 @@ typedef uint32_t rtimer_clock_t;
 #define CLOCK_CONF_SECOND                       1024
 
 #define NETSTACK_CONF_WITH_IPV6                 1
-#define NETSTACK_CONF_RADIO                     cc2520_driver
-#define NETSTACK_CONF_FRAMER                    framer_802154
-#ifndef NETSTACK_CONF_RDC
-  #define NETSTACK_CONF_RDC                     nullrdc_driver
+
+#ifdef __USE_CC2520__
+  #define NETSTACK_CONF_RADIO                     cc2520_driver
+  #define NETSTACK_CONF_FRAMER                    framer_802154
+  #ifndef NETSTACK_CONF_RDC
+    #define NETSTACK_CONF_RDC                     nullrdc_driver
+  #endif
+#elif  __USE_CA8210__
+/* netstack definition */
+/* note that for the ca8210 a new framer level (framer_hardmac) had to be created, */
+/* as framing is done in hardware, but 6lowpan is using a framer function that is  */
+/* calculating the MAC header size for fragmentation */
+  #define NETSTACK_CONF_RADIO                     ca8210_driver
+  #define NETSTACK_CONF_FRAMER                    framer_hardmac
+  #ifndef NETSTACK_CONF_RDC
+    #define NETSTACK_CONF_RDC                     nullrdc_noframer_driver
+  #endif
 #endif
+
 #define NETSTACK_CONF_MAC                       nullmac_driver
 #define NETSTACK_CONF_NETWORK                   sicslowpan_driver
 #ifndef RF_CHANNEL
@@ -65,13 +86,21 @@ typedef uint32_t rtimer_clock_t;
 #ifndef IEEE802154_CONF_PANID
   #define IEEE802154_CONF_PANID                 0xABCD
 #endif
-//#define FIXED_MAC_ADDRESS                     0xDEADBEEFDEADBEEF
+
+/* fixed MAC address for udp-server */
+//#define FIXED_MAC_ADDRESS                       0xDEADBEEFDEADBEEF
+/* fixed MAC address for udp-client or ping6 client */
+//#define FIXED_MAC_ADDRESS                       0xA8A7A6A5A4A3A2A1
+
+/* udp server local-link address has to be declared and used for udp-client */
+#define UDP_CONNECTION_ADDR                     FE80:0:0:0:EDBE:ADDE:EFBE:ADDE
 
 #define UIP_CONF_ROUTER                         0
 #define LINKADDR_CONF_SIZE                      8
 #ifndef UIP_CONF_BUFFER_SIZE
   #define UIP_CONF_BUFFER_SIZE                  1024
 #endif
+#define QUEUEBUF_CONF_NUM                       10  /* default is 8, too low for max. fragmentation */
 
 /* UDP configuration options */
 #define UIP_CONF_UDP                            1
@@ -93,6 +122,9 @@ typedef uint32_t rtimer_clock_t;
 #define UIP_CONF_LLH_LEN                        0
 #define UIP_CONF_LL_802154                      1
 
+//#define UIP_CONF_IPV6_QUEUE_PKT					1
+/* extend default(30 seconds) so that neighbour discovery doesn't kick in all the time */
+#define UIP_CONF_ND6_REACHABLE_TIME             1200000  // 20 minutes
 
 /*
  * There are 2 red LEDs on the board, LED1 is mapped to the Contiki LEDS_RED
