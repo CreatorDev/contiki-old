@@ -16,8 +16,15 @@ Some key paths where IMG have added source code to support Contiki on Mikro-E Cl
 
 | Folder              				| Content                                              							                      |
 | :----               				| :----                                                							                      |
-| platform/mikro-e			      | Porting of drivers for peripherals like Button, LED, CC2520 etc. on Mikro-E Clicker			|
+| platform/mikro-e			      | Porting of drivers for peripherals like Button, LED, CC2520, CA8210 etc. on Mikro-E Clicker			|
 | examples/mikro-e            | Applications for Mikro-E Clicker board                                                  |         
+
+## Cascoda ca8210 transceiver support
+
+Cascoda ca8210 transceiver driver has been added git submodule. So you first need to checkout the driver code before building any contiki application based upon ca8210.
+
+    $ git submodule init "dev/ca8210"
+    $ git submodule update
 
 ## Getting Started
 
@@ -27,9 +34,16 @@ environment variables and compile an example, say "Hello World" which is include
 
     $ export PATH=$PATH:/opt/microchip/xc32/v1.34/bin/
 
-The application e.g. Hello World can be built for Mikro-E Clicker and HEX file can be generated to flash on the board as per below:
+Platform mikro-e makefile has been updated to build either for cc2520 or for ca8210 depending the build option USE_CC2520 or USE_CA8210. The application e.g. Hello World can be built for Mikro-E Clicker and HEX file can be generated to flash on the board as per below:
+
+For clicker boards using CA8210:
 
     $ cd examples/hello-world
-    $ make TARGET=mikro-e
+    $ make TARGET=mikro-e USE_CA8210=1
     $ /opt/microchip/xc32/v1.34/bin/xc32-bin2hex hello-world.mikro-e
 
+For clicker boards using CC2520:
+
+    $ cd examples/hello-world
+    $ make TARGET=mikro-e USE_CC2520=1
+    $ /opt/microchip/xc32/v1.34/bin/xc32-bin2hex hello-world.mikro-e

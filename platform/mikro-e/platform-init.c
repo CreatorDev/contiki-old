@@ -84,9 +84,19 @@ platform_init()
   TRISGCLR = _TRISG_TRISG8_MASK;
   RPG8R = 0b0110;
 
-  /* INT1 for FIFOP: RD5 */
-  TRISDSET = _TRISD_TRISD5_MASK;
-  INT1R = 0b0110;
+  #ifdef __USE_CC2520__
+
+    /* INT1 for CC2520 FIFOP: RD5 */
+    TRISDSET = _TRISD_TRISD5_MASK;
+    INT1R = 0b0110;
+
+  #elif __USE_CA8210
+
+    /* INT1 for CA8210 NIRQ: RD1 */
+    TRISDSET = _TRISD_TRISD1_MASK;
+    INT1R = 0b0000;
+
+  #endif
 
   /* Lock again */
   CFGCONbits.IOLOCK=1;

@@ -35,9 +35,11 @@
 
 #include <lib/random.h>
 #include <time.h>
-
-#include <dev/cc2520/cc2520.h>
-
+#ifdef __USE_CC2520__
+  #include <dev/cc2520/cc2520.h>
+#elif  __USE_CA8210__
+  #include <dev/ca8210/ca8210-radio.h>
+#endif
 #define DEBUG 1
 #if DEBUG
 #include <stdio.h>
@@ -58,12 +60,20 @@ net_init()
   uint8_t i;
 
   queuebuf_init();
-  cc2520_init();
+  #ifdef __USE_CC2520__
+    cc2520_init();
+  #elif  __USE_CA8210__
+    ca8210_init();
+  #endif
 
   memset(&shortaddr, 0, sizeof(shortaddr));
   memset(&longaddr, 0, sizeof(longaddr));
   #ifndef FIXED_MAC_ADDRESS
-  cc2520_get_random((uint8_t *)&longaddr, sizeof(longaddr));
+  #ifdef __USE_CC2520__
+    cc2520_get_random((uint8_t *)&longaddr, sizeof(longaddr));
+  #elif  __USE_CA8210__
+    ca8210_get_random((uint8_t *)&longaddr, sizeof(longaddr));
+  #endif
   #else
   longaddr = FIXED_MAC_ADDRESS;
   #endif
@@ -76,8 +86,13 @@ net_init()
   }
   linkaddr_set_node_addr(&addr);
 
-  cc2520_set_channel(RF_CHANNEL);
-  cc2520_set_pan_addr(IEEE802154_PANID, shortaddr, (uint8_t *)&longaddr);
+  #ifdef __USE_CC2520__
+    cc2520_set_channel(RF_CHANNEL);
+    cc2520_set_pan_addr(IEEE802154_PANID, shortaddr, (uint8_t *)&longaddr);
+  #elif  __USE_CA8210__
+    ca8210_init_pib(RF_CHANNEL, IEEE802154_PANID, shortaddr, (uint8_t *)&longaddr);
+  #endif
+
   NETSTACK_RDC.init();
   NETSTACK_MAC.init();
   NETSTACK_NETWORK.init();
