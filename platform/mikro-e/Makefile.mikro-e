@@ -22,6 +22,9 @@ CONTIKI_PLAT_DEFS += -D __USE_SPI__
 CONTIKI_PLAT_DEFS += -D __USE_SPI_PORT2__
 CONTIKI_PLAT_DEFS += -D __USE_SPI_PORT1__
 
+CONTIKI_PLAT_DEFS += -D __USE_I2C__
+CONTIKI_PLAT_DEFS += -D __USE_I2C_PORT1__
+
 CONTIKI_TARGET_SOURCEFILES = contiki-mikro-e-main.c leds-arch.c platform-init.c \
                              net-init.c button-sensor.c serial-line.c
 
@@ -44,5 +47,4 @@ CONTIKI_SOURCEFILES += $(CONTIKI_TARGET_SOURCEFILES)
 ifdef NODE_ID
   CFLAGS += -DNODE_ID=${NODE_ID}
 endif
-
 include $(CONTIKI)/cpu/pic32/Makefile.pic32
