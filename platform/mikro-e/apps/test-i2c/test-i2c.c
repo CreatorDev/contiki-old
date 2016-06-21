@@ -33,8 +33,10 @@
 
 /**
  * \file
- * 	A test application for I2C driver useing I2C1 port and Thermo3-click as slave.
- *	http://www.mikroe.com/click/thermo3/
+ * A test application for I2C driver using I2C1 port and Thermo3-click as slave.
+ * It writes the data 0x60E0 to TMP102 configuration register, reads from it
+ * and also prints the same on console.
+ * http://www.mikroe.com/click/thermo3/
  *
  */
 
