@@ -9,4 +9,4 @@
 	url = https://github.com/g-oikonomou/cc26xxware.git
 [submodule "dev/ca8210"]
 	path = dev/ca8210
-	url = git@github.com:FlowM2M/ca8210-contiki.git
+	url = https://github.com/FlowM2M/ca8210-contiki.git
