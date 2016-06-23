@@ -36,4 +36,8 @@
 #include "motion-click/motion-click.h"
 #endif
 
+#ifdef RELAY_CLICK
+#include "relay-click/relay-click.h"
+#endif
+
 #endif /* __COMMON_CLICKS_H__ */

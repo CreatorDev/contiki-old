@@ -1,10 +1,15 @@
-CONTIKI_PROJECT=test-relay
-CONTIKI=../../../..
+CONTIKI_PROJECT = test-relay
+CONTIKI = ../../../..
 
-APPS += dev
-APPDIRS += ../..
+RELAY_CLICK = relay-click
+
+CFLAGS += -DRELAY_CLICK
+
+APPS += relay-click
+APPDIRS += ../../dev
 
 all: $(CONTIKI_PROJECT)
+	xc32-bin2hex $(CONTIKI_PROJECT).$(TARGET)
 
 distclean: cleanall
 
