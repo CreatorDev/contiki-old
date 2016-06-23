@@ -37,7 +37,7 @@
  */
 
 #include "contiki.h"
-#include "relay-click.h"
+#include "dev/common-clicks.h"
 /*---------------------------------------------------------------------------*/
 PROCESS(test_relay_click, "Test relay-click");
 AUTOSTART_PROCESSES(&test_relay_click);

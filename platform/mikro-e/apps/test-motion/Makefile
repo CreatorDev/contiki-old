@@ -1,11 +1,11 @@
-CONTIKI_PROJECT = test-relay
+CONTIKI_PROJECT = test-motion
 CONTIKI = ../../../..
 
-RELAY_CLICK = relay-click
+MOTION_CLICK = motion-click
 
-CFLAGS += -DRELAY_CLICK
+CFLAGS += -DMOTION_CLICK
 
-APPS += relay-click
+APPS += motion-click
 APPDIRS += ../../dev
 
 all: $(CONTIKI_PROJECT)

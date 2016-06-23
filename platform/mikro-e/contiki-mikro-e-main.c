@@ -48,15 +48,21 @@
 #include <leds.h>
 #include <sensors.h>
 #include "button-sensor.h"
+#include "dev/common-clicks.h"
 
 #define UART_DEBUG_BAUDRATE 115200
+
+#ifdef MOTION_CLICK
+SENSORS(&button_sensor, &button_sensor2, &motion_sensor);
+#else
 SENSORS(&button_sensor, &button_sensor2);
+#endif
 
 /*---------------------------------------------------------------------------*/
 int
 main(int argc, char **argv)
 {
-  int32_t r;
+  int32_t r = 0;
 
   pic32_init();
   watchdog_init();
@@ -103,6 +109,11 @@ ISR(_CHANGE_NOTICE_VECTOR)
   } else if(BUTTON2_CHECK_IRQ()) {
     /* Button2 was pressed */
     button2_isr();
+#ifdef MOTION_CLICK
+  } else if(MOTION_SENSOR_CHECK_IRQ()) {
+    /* Motion was detected */
+    motion_sensor_isr();
+#endif
   }
 }
 
