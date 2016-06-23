@@ -1,8 +1,6 @@
 CONTIKI_PROJECT = test-relay
 CONTIKI = ../../../..
 
-RELAY_CLICK = relay-click
-
 CFLAGS += -DRELAY_CLICK
 
 APPS += relay-click

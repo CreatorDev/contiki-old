@@ -36,8 +36,8 @@
  *
  */
 
-#ifndef __MOTION_SENSOR_H__
-#define __MOTION_SENSOR_H__
+#ifndef __MOTION_CLICK_H__
+#define __MOTION_CLICK_H__
 
 #include <pic32_gpio.h>
 
@@ -88,4 +88,4 @@ void motion_sensor_isr(void);
 
 extern const struct sensors_sensor motion_sensor;
 
-#endif /* __MOTION_SENSOR_H__ */
+#endif /* __MOTION_CLICK_H__ */
