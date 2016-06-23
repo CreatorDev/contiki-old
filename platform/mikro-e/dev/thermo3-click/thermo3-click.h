@@ -38,8 +38,8 @@
  *
  */
 
-#ifndef __TMP_102_H__
-#define __TMP_102_H__
+#ifndef __THERMO3_CLICK_H__
+#define __THERMO3_CLICK_H__
 
 #define I2C_FREQUENCY		100000
 
@@ -69,4 +69,4 @@ void tmp102_reg_read(uint8_t *);
 void tmp102_reg_write(uint8_t , uint8_t );
 
 /*---------------------------------------------------------------------------*/
-#endif /*  __TMP_102_H__ */
+#endif /*  __THERMO3_CLICK_H__ */

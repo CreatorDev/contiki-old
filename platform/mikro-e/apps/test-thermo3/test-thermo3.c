@@ -39,7 +39,7 @@
 
 #include <contiki.h>
 #include <stdio.h>
-#include "thermo3-click.h"
+#include "dev/common-clicks.h"
 
 #define TEMP_REG	0x00   /*Temp. register Address*/
 #define CONFIG_REG	0x01   /*Config. register Address*/ 
@@ -52,7 +52,7 @@ AUTOSTART_PROCESSES (&test_thermo3);
 PROCESS_THREAD(test_thermo3, ev, data)
 {
   PROCESS_BEGIN();
-  static float temp_c;
+  static double temp_c;
   static struct etimer et;
   tmp102_init();
   tmp102_reg_select(CONFIG_REG);                

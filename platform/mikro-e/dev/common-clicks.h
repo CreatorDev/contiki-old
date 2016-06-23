@@ -40,4 +40,8 @@
 #include "relay-click/relay-click.h"
 #endif
 
+#ifdef THERMO3_CLICK
+#include "thermo3-click/thermo3-click.h"
+#endif
+
 #endif /* __COMMON_CLICKS_H__ */
