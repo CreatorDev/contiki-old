@@ -1,8 +1,6 @@
 CONTIKI_PROJECT = test-motion
 CONTIKI = ../../../..
 
-MOTION_CLICK = motion-click
-
 CFLAGS += -DMOTION_CLICK
 
 APPS += motion-click

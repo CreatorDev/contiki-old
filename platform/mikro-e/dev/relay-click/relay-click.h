@@ -37,8 +37,8 @@
  *         http://www.mikroe.com/click/relay/
  */
 
-#ifndef RELAY_CLICK_H_
-#define RELAY_CLICK_H_
+#ifndef __RELAY_CLICK_H__
+#define __RELAY_CLICK_H__
 
 typedef enum
 {
@@ -51,4 +51,4 @@ void relay_on(Relay relay_num);
 void relay_off(Relay relay_num);
 void relay_toggle(Relay relay_num);
 
-#endif /* RELAY_CLICK_H_ */
+#endif /* __RELAY_CLICK_H__ */
