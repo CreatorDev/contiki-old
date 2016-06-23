@@ -44,4 +44,8 @@
 #include "thermo3-click/thermo3-click.h"
 #endif
 
+#ifdef PROXIMITY_CLICK
+#include "proximity-click/proximity-click.h"
+#endif
+
 #endif /* __COMMON_CLICKS_H__ */
