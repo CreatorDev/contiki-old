@@ -38,9 +38,8 @@
  */
 
 #include <contiki.h>
-#include "proximity-click.h"
+#include "dev/common-clicks.h"
 #include <lib/sensors.h>
-#include "motion-click.h"
 #include "dev/leds.h"
 #include "sys/clock.h"
 

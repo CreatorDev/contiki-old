@@ -29,8 +29,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef PROXIMITY_CLICK_H_
-#define PROXIMITY_CLICK_H_
+#ifndef __PROXIMITY_CLICK_H__
+#define __PROXIMITY_CLICK_H__
 
 void proximity_click_init();
 
@@ -39,4 +39,4 @@ void proximity_data();
 void proximity_clear_irq();
 
 
-#endif /* PROXIMITY_CLICK_H_ */	
+#endif /* __PROXIMITY_CLICK_H__ */

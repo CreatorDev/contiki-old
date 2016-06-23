@@ -36,8 +36,8 @@
 #include "proximity-click.h"
 
 #define I2C_FREQUENCY		          100000
-#define SALE_ADDR_WRITE               0X26
-#define SALE_ADDR_READ                0X27
+#define ADDR_WRITE               0X26
+#define ADDR_READ                0X27
 /* VCNL4010 REGISTERS */
 #define COMMAND_REG                   0X80
 #define PROXIMITY_RATE_REG            0X82
@@ -54,8 +54,8 @@
 #define IRLED_CURRENT_100MA           0X10
 #define THRESHOLD_UPPER_BYTE          0X08
 #define THRESHOLD_LOWER_BYTE          0XA0
-#define TH_INT_EN_TWO_COUNT           0X22
-#define INT_LINE_RESET                0XFF
+#define INTERRUPT_REG_SETTING         0X22
+#define INTERRUPT_RESET                0XFF
 void
 proximity_click_init(void)
 {
@@ -66,37 +66,37 @@ proximity_click_init(void)
   i2c1_master_enable();
   i2c1_send_start();
   /* proximity data enable and selftime enable */
-  i2c1_byte_send(SALE_ADDR_WRITE);
+  i2c1_byte_send(ADDR_WRITE);
   i2c1_byte_send(COMMAND_REG);
   i2c1_byte_send(PROXIMITY_SELFTIME_EN);
   i2c1_send_repeated_start();
   /* proximity measurement rate 4  measurement pre second */
-  i2c1_byte_send(SALE_ADDR_WRITE);
+  i2c1_byte_send(ADDR_WRITE);
   i2c1_byte_send(PROXIMITY_RATE_REG);
   i2c1_byte_send(PROXIMITY_RATE_4);
   i2c1_send_repeated_start();
   /* IRLED current 100 mA */
-  i2c1_byte_send(SALE_ADDR_WRITE);
+  i2c1_byte_send(ADDR_WRITE);
   i2c1_byte_send(IRLED_CUURENT_REG);
   i2c1_byte_send(IRLED_CURRENT_100MA);
   i2c1_send_repeated_start();
   /* High threshold register upper byte */
-  i2c1_byte_send(SALE_ADDR_WRITE);
+  i2c1_byte_send(ADDR_WRITE);
   i2c1_byte_send(HIGH_THRESHOLD_UPPER_REG);
   i2c1_byte_send(THRESHOLD_UPPER_BYTE);
   i2c1_send_repeated_start();
   /* High threshold register lower byte */
-  i2c1_byte_send(SALE_ADDR_WRITE);
+  i2c1_byte_send(ADDR_WRITE);
   i2c1_byte_send(HIGH_THRESHOLD_LOWER_REG);
   i2c1_byte_send(THRESHOLD_LOWER_BYTE);
   i2c1_send_repeated_start();
-  /* Interrupt control register two mesurements 
+  /* Interrupt control register two mesurements
    * exceed threshold and proximity INT enable
    * also threshold applied to proximity measurements
    */
-  i2c1_byte_send(SALE_ADDR_WRITE);
+  i2c1_byte_send(ADDR_WRITE);
   i2c1_byte_send(INTERRUPT_CONTROL_REG);
-  i2c1_byte_send(TH_INT_EN_TWO_COUNT);
+  i2c1_byte_send(INTERRUPT_REG_SETTING);
   i2c1_send_stop();
   i2c1_master_disable();
 }
@@ -105,19 +105,19 @@ void
 proximity_data(void)
 {
   uint8_t data[2];
-  uint16_t value; 
+  uint16_t value;
   i2c1_master_enable();
   i2c1_send_start();
-  i2c1_byte_send(SALE_ADDR_WRITE);
+  i2c1_byte_send(ADDR_WRITE);
   i2c1_byte_send(PROXIMITY_DATA_UPPER_REG);
   i2c1_send_repeated_start();
-  i2c1_byte_send(SALE_ADDR_READ);
+  i2c1_byte_send(ADDR_READ);
   i2c1_byte_receive(data);
   i2c1_send_repeated_start();
-  i2c1_byte_send(SALE_ADDR_WRITE);
+  i2c1_byte_send(ADDR_WRITE);
   i2c1_byte_send(PROXIMITY_DATA_LOWER_REG);
   i2c1_send_repeated_start();
-  i2c1_byte_send(SALE_ADDR_READ);
+  i2c1_byte_send(ADDR_READ);
   i2c1_byte_receive(data + 1);
   i2c1_send_stop();
   i2c1_master_disable();
@@ -131,9 +131,9 @@ proximity_clear_irq(void)
   i2c1_master_enable();
   i2c1_send_start();
   /* Reset interrupt status register */
-  i2c1_byte_send(SALE_ADDR_WRITE);
+  i2c1_byte_send(ADDR_WRITE);
   i2c1_byte_send(INTERRUPT_STATUS_REG);
-  i2c1_byte_send(INT_LINE_RESET);
+  i2c1_byte_send(INTERRUPT_RESET);
   i2c1_send_stop();
   i2c1_master_disable();
 }
