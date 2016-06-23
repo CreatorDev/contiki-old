@@ -1,1 +1,2 @@
 dev_src = relay-click.c
+dev_src += thermo3-click.c
