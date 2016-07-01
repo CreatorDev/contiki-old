@@ -32,7 +32,7 @@
  */
 
 /**
- * \file   
+ * \file
  * 	I2C driver for PIC32MX (pic32mx470f512h)
  */
 
@@ -54,6 +54,7 @@
 #include <pic32_i2c.h>
 /*----------------------------------------------------------------------------------------------*/
 #define I2C_PORT(XX)                                                     \
+  static uint8_t i2c##XX##_nack_bit = 0;                                 \
   uint8_t                                                                \
   i2c##XX##_bus_idle(void)                                               \
   {                                                                      \
@@ -82,7 +83,7 @@
     return 0;                                                            \
   }                                                                      \
   uint8_t                                                                \
-  i2c##XX##_byte_send(uint8_t byte)                                      \
+  i2c##XX##_send_byte(uint8_t byte)                                      \
   {                                                                      \
     I2C##XX##TRN = byte;                                                 \
     i2c##XX##_bus_idle();                                                \
@@ -100,10 +101,10 @@
     return 0;                                                            \
   }                                                                      \
   uint8_t                                                                \
-  i2c##XX##_burst_send(uint8_t *ptr, uint8_t length)                     \
+  i2c##XX##_send_bytes(uint8_t *ptr, uint8_t length)                     \
   {                                                                      \
     while(length) {                                                      \
-    if(i2c##XX##_byte_send(*ptr))                                        \
+    if(i2c##XX##_send_byte(*ptr))                                        \
     return 1;                                                            \
     ptr++;                                                               \
     length--;                                                            \
@@ -111,7 +112,7 @@
     return 0;                                                            \
   }                                                                      \
   uint8_t                                                                \
-  i2c##XX##_byte_receive(uint8_t *data)                                  \
+  i2c##XX##_receive_byte(uint8_t *data)                                  \
   {                                                                      \
     I2C##XX##CONSET = _I2C##XX##CON_RCEN_MASK;                           \
     i2c##XX##_bus_idle();                                                \
@@ -122,16 +123,29 @@
       printf("Collision ocurred, Data is invalid\n");                    \
       return 1;                                                          \
     }                                                                    \
+    I2C##XX##CONbits.ACKDT = i2c##XX##_nack_bit;                         \
     I2C##XX##CONbits.ACKEN = 1;                                          \
     i2c##XX##_bus_idle();                                                \
     *data = I2C##XX##RCV & 0x000000ff;                                   \
+    i2c##XX##_nack_bit = 0;                                              \
+    I2C##XX##CONbits.ACKDT = 0;	                                         \
     return 0;                                                            \
   }                                                                      \
   uint8_t                                                                \
-  i2c##XX##_burst_receive(uint8_t *ptr, uint8_t length)                  \
+  i2c##XX##_set_nack(uint8_t bit)                                        \
   {                                                                      \
+    i2c##XX##_nack_bit = bit & 0x01;                                     \
+    return 0;                                                            \
+  }                                                                      \
+  uint8_t                                                                \
+  i2c##XX##_receive_bytes(uint8_t *ptr, uint8_t length)                  \
+  {                                                                      \
+    uint8_t start_nack_bit = i2c##XX##_nack_bit;                         \
+    i2c##XX##_nack_bit = 0;                                              \
     while(length) {                                                      \
-    if(i2c##XX##_byte_receive(ptr)) {                                    \
+    if(length == 1 && start_nack_bit)                                    \
+        i2c##XX##_nack_bit = start_nack_bit;                             \
+    if(i2c##XX##_receive_byte(ptr)) {                                    \
       return 1;                                                          \
     }                                                                    \
     ptr++;                                                               \
@@ -177,7 +191,7 @@
   {                                                                      \
     I2C##XX##CONSET = _I2C##XX##CON_ON_MASK;                             \
     return 0;                                                            \
-  }                                                                            
+  }
 /*--------------------------------------------------------------------------------------------*/
 
 #ifdef __32MX470F512H__
