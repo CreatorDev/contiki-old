@@ -81,8 +81,11 @@ main(int argc, char **argv)
 
   dbg_setup_uart(UART_DEBUG_BAUDRATE);
   net_init();
-
+#ifdef __USE_UART_PORT3__
   uart3_set_input(serial_line_input_byte);
+#elif  __USE_UART_PORT2__
+  uart2_set_input(serial_line_input_byte);
+#endif
   serial_line_init();
 
   autostart_start(autostart_processes);
