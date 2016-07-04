@@ -53,24 +53,24 @@ void tmp102_reg_select(uint8_t reg)
 {
   i2c1_master_enable();
   i2c1_send_start();
-    if(i2c1_byte_send (TMP102_REG_WRITE)) {
+    if(i2c1_send_byte (TMP102_REG_WRITE)) {
       i2c1_send_repeated_start();
-      if(i2c1_byte_send (TMP102_REG_WRITE)) {
+      if(i2c1_send_byte (TMP102_REG_WRITE)) {
         printf("Failed the connection to Thermo3\n");
       }		
     }
   switch (reg) {
     case TMP102_TEMP:
-      i2c1_byte_send (TMP102_TEMP);
+      i2c1_send_byte (TMP102_TEMP);
       break;
     case TMP102_CONF:
-      i2c1_byte_send (TMP102_CONF);
+      i2c1_send_byte (TMP102_CONF);
       break;
     case TMP102_TLOW:
-      i2c1_byte_send (TMP102_TLOW);
+      i2c1_send_byte (TMP102_TLOW);
       break;
     case TMP102_THIGH:
-      i2c1_byte_send (TMP102_THIGH);
+      i2c1_send_byte (TMP102_THIGH);
       break;
     default:
       printf("Invalid Register Address\n");
@@ -85,11 +85,11 @@ void tmp102_reg_read(uint8_t *data)
   i2c1_master_enable();
   i2c1_send_start();
   /*command to TMP102 to Write data on bus */
-  if(i2c1_byte_send (TMP102_REG_READ)) {
+  if(i2c1_send_byte (TMP102_REG_READ)) {
     printf("Failed the connection to Thermo3\n");	
   }
-  i2c1_byte_receive(data);
-  i2c1_byte_receive((data + 1));
+  i2c1_receive_byte(data);
+  i2c1_receive_byte((data + 1));
   i2c1_send_stop();
   i2c1_master_disable();
 }
@@ -99,9 +99,9 @@ void tmp102_reg_write(uint8_t msb, uint8_t lsb)
   i2c1_master_enable();
   i2c1_send_start();
   /*command to TMP102 to Read data from bus */
-  i2c1_byte_send (TMP102_REG_WRITE);
-  i2c1_byte_send(msb);
-  i2c1_byte_send(lsb);
+  i2c1_send_byte (TMP102_REG_WRITE);
+  i2c1_send_byte(msb);
+  i2c1_send_byte(lsb);
   i2c1_send_stop();
   i2c1_master_disable();
 }

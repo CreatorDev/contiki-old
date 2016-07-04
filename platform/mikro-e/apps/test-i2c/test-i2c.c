@@ -67,7 +67,7 @@ PROCESS_THREAD(test_i2c, ev, data)
   i2c1_master_enable();
   i2c1_send_start();
   /*pass the array to be send and no.of byte*/
-  if(i2c1_burst_send (send_data, 4)) {	
+  if(i2c1_send_bytes (send_data, 4)) {
     printf("Failed the connection to slave\n");
   }
   i2c1_send_stop();
@@ -75,9 +75,9 @@ PROCESS_THREAD(test_i2c, ev, data)
     etimer_set(&et, CLOCK_SECOND);
     i2c1_send_start();
     /*commond to TMP102 write data on bus*/
-    i2c1_byte_send(TMP102_READ_ADDRESS);
+    i2c1_send_byte(TMP102_READ_ADDRESS);
     /*pass the array to be receive and no.of byte*/
-    if(i2c1_burst_receive(receive_data, 2)) {
+    if(i2c1_receive_bytes(receive_data, 2)) {
       printf("Failed to receiving the data form slave\n");
     }
     i2c1_send_stop();
