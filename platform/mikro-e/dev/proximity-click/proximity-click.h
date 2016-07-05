@@ -29,23 +29,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __COMMON_CLICKS_H__
-#define __COMMON_CLICKS_H__
+#ifndef __PROXIMITY_CLICK_H__
+#define __PROXIMITY_CLICK_H__
 
-#ifdef MOTION_CLICK
-#include "motion-click/motion-click.h"
-#endif
+void proximity_click_init();
 
-#ifdef RELAY_CLICK
-#include "relay-click/relay-click.h"
-#endif
+void proximity_data();
 
-#ifdef THERMO3_CLICK
-#include "thermo3-click/thermo3-click.h"
-#endif
+void proximity_clear_irq();
 
-#ifdef PROXIMITY_CLICK
-#include "proximity-click/proximity-click.h"
-#endif
 
-#endif /* __COMMON_CLICKS_H__ */
+#endif /* __PROXIMITY_CLICK_H__ */
