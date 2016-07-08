@@ -1,10 +1,11 @@
 CONTIKI_PROJECT = test-proximity
 CONTIKI = ../../../..
 
-CFLAGS += -DPROXIMITY_CLICK -DMOTION_CLICK
+PROXIMITY_CLICK = proximity-click
+
+CFLAGS += -DPROXIMITY_CLICK
 
 APPS += proximity-click
-APPS += motion-click
 APPDIRS += ../../dev
 
 all: $(CONTIKI_PROJECT)

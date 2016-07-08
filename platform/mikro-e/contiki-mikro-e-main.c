@@ -54,6 +54,8 @@
 
 #ifdef MOTION_CLICK
 SENSORS(&button_sensor, &button_sensor2, &motion_sensor);
+#elif PROXIMITY_CLICK
+SENSORS(&button_sensor, &button_sensor2, &proximity_sensor);
 #else
 SENSORS(&button_sensor, &button_sensor2);
 #endif
@@ -116,6 +118,10 @@ ISR(_CHANGE_NOTICE_VECTOR)
   } else if(MOTION_SENSOR_CHECK_IRQ()) {
     /* Motion was detected */
     motion_sensor_isr();
+#elif PROXIMITY_CLICK
+  } else if(PROXIMITY_SENSOR_CHECK_IRQ()) {
+    /* Proximity was detected */
+    proximity_sensor_isr();
 #endif
   }
 }

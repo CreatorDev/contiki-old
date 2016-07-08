@@ -38,39 +38,41 @@
  */
 
 #include <contiki.h>
-#include "dev/common-clicks.h"
+#include <stdio.h>
 #include <lib/sensors.h>
+#include "dev/common-clicks.h"
 #include "dev/leds.h"
 #include "sys/clock.h"
-
 /*---------------------------------------------------------------------------*/
-PROCESS(proximity_test, "testing proximity-click");
-AUTOSTART_PROCESSES(&proximity_test);
+PROCESS(test_proximity, "testing proximity-click");
+AUTOSTART_PROCESSES(&test_proximity);
 /*---------------------------------------------------------------------------*/
-PROCESS_THREAD(proximity_test, ev, data)
+PROCESS_THREAD(test_proximity, ev, data)
 {
+  static int i;
+  static int val;
   PROCESS_EXITHANDLER(goto exit;)
   PROCESS_BEGIN();
-  proximity_click_init();
-  SENSORS_ACTIVATE(motion_sensor);
-  static int i;
-  //static struct etimer et;
+  SENSORS_ACTIVATE(proximity_sensor);
+
   while(1) {
-    proximity_data();
-    proximity_clear_irq();
-    PROCESS_WAIT_EVENT_UNTIL((ev == sensors_event) ); 
-    if(data == &motion_sensor) {
-    	printf("Obstacle detected by sensor\n");
+  PROCESS_WAIT_EVENT_UNTIL((ev == sensors_event));
+  val = proximity_sensor.value(0);
+  printf("Proximity value = %d \n",val);
+
+  if(data == &proximity_sensor) {
+      printf("Obstacle detected by sensor\n");
       leds_on(LEDS_ALL);
-     /*  Delay for 500ms */
+      /*  Delay for 500ms */
       for(i=0;i<=500;++i) {
         clock_delay_usec(1000);
       }
       leds_off(LEDS_ALL);
     }
   }
+
   exit:
-  SENSORS_DEACTIVATE(motion_sensor);
+  SENSORS_DEACTIVATE(proximity_sensor);
   PROCESS_END();
 }
 /*---------------------------------------------------------------------------*/

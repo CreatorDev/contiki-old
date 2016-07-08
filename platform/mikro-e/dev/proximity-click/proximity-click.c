@@ -33,107 +33,128 @@
 #include <stdint.h>
 #include <p32xxxx.h>
 #include <pic32_i2c.h>
+#include <lib/sensors.h>
 #include "proximity-click.h"
 
-#define I2C_FREQUENCY		          100000
-#define ADDR_WRITE               0X26
-#define ADDR_READ                0X27
-/* VCNL4010 REGISTERS */
-#define COMMAND_REG                   0X80
-#define PROXIMITY_RATE_REG            0X82
-#define IRLED_CUURENT_REG             0X83
-#define PROXIMITY_DATA_UPPER_REG      0X87
-#define PROXIMITY_DATA_LOWER_REG      0X88
-#define HIGH_THRESHOLD_UPPER_REG      0X8C
-#define HIGH_THRESHOLD_LOWER_REG      0X8D
-#define INTERRUPT_CONTROL_REG         0X89
-#define INTERRUPT_STATUS_REG          0X8E
-/* reg config value */
-#define PROXIMITY_SELFTIME_EN         0X03
-#define PROXIMITY_RATE_4              0X01
-#define IRLED_CURRENT_100MA           0X10
-#define THRESHOLD_UPPER_BYTE          0X08
-#define THRESHOLD_LOWER_BYTE          0XA0
-#define INTERRUPT_REG_SETTING         0X22
-#define INTERRUPT_RESET                0XFF
-void
-proximity_click_init(void)
+static struct timer debouncetimer;
+static int proximity_sensor_mode;
+
+/*---------------------------------------------------------------------------*/
+static void
+proximity_sensor_read(const struct sensors_sensor *s)
 {
-  i2c1_init();
-  i2c1_set_frequency (I2C_FREQUENCY);
-  I2C1CONCLR = _I2C1CON_SMEN_MASK;
-  I2C1CONSET = _I2C1CON_ACKDT_MASK;
-  i2c1_master_enable();
-  i2c1_send_start();
-  /* proximity data enable and selftime enable */
-  i2c1_byte_send(ADDR_WRITE);
-  i2c1_byte_send(COMMAND_REG);
-  i2c1_byte_send(PROXIMITY_SELFTIME_EN);
-  i2c1_send_repeated_start();
-  /* proximity measurement rate 4  measurement pre second */
-  i2c1_byte_send(ADDR_WRITE);
-  i2c1_byte_send(PROXIMITY_RATE_REG);
-  i2c1_byte_send(PROXIMITY_RATE_4);
-  i2c1_send_repeated_start();
-  /* IRLED current 100 mA */
-  i2c1_byte_send(ADDR_WRITE);
-  i2c1_byte_send(IRLED_CUURENT_REG);
-  i2c1_byte_send(IRLED_CURRENT_100MA);
-  i2c1_send_repeated_start();
-  /* High threshold register upper byte */
-  i2c1_byte_send(ADDR_WRITE);
-  i2c1_byte_send(HIGH_THRESHOLD_UPPER_REG);
-  i2c1_byte_send(THRESHOLD_UPPER_BYTE);
-  i2c1_send_repeated_start();
-  /* High threshold register lower byte */
-  i2c1_byte_send(ADDR_WRITE);
-  i2c1_byte_send(HIGH_THRESHOLD_LOWER_REG);
-  i2c1_byte_send(THRESHOLD_LOWER_BYTE);
-  i2c1_send_repeated_start();
-  /* Interrupt control register two mesurements
-   * exceed threshold and proximity INT enable
-   * also threshold applied to proximity measurements
-   */
-  i2c1_byte_send(ADDR_WRITE);
-  i2c1_byte_send(INTERRUPT_CONTROL_REG);
-  i2c1_byte_send(INTERRUPT_REG_SETTING);
-  i2c1_send_stop();
-  i2c1_master_disable();
+  if (timer_expired(&debouncetimer)) {
+    /* Set a timer for 100ms to ignore false notifications */
+    timer_set(&debouncetimer, CLOCK_SECOND / 10);
+    /* Notify processes that proximity has been detected */
+    sensors_changed(s);
+  }
 }
 
 void
-proximity_data(void)
+proximity_sensor_isr(void)
+{
+  proximity_sensor_read(&proximity_sensor);
+  /* Clear interrupt for Proximity sensor */
+  PROXIMITY_SENSOR_CLEAR_IRQ();
+}
+/*---------------------------------------------------------------------------*/
+static int
+proximity_sensor_configure(int type, int value)
+{
+
+  switch(type) {
+    case SENSORS_HW_INIT:
+        PROXIMITY_SENSOR_IRQ_INIT();
+        return 1;
+
+    case SENSORS_ACTIVE:
+      if(value) {
+        if(!proximity_sensor_mode) {
+          i2c1_init();
+          i2c1_set_frequency (I2C_FREQUENCY);
+          I2C1CONCLR = _I2C1CON_SMEN_MASK;
+          I2C1CONSET = _I2C1CON_ACKDT_MASK;
+          i2c1_master_enable();
+          i2c1_send_start();
+          /* proximity data enable and selftime enable */
+          i2c1_byte_send(WRITE_ADDR);
+          i2c1_byte_send(COMMAND_REG);
+          i2c1_byte_send(PROXIMITY_SELFTIME_EN);
+          i2c1_send_repeated_start();
+          /* proximity measurement rate 4  measurement pre second */
+          i2c1_byte_send(WRITE_ADDR);
+          i2c1_byte_send(PROXIMITY_RATE_REG);
+          i2c1_byte_send(PROXIMITY_RATE_4);
+          i2c1_send_repeated_start();
+          /* IRLED current 100 mA */
+          i2c1_byte_send(WRITE_ADDR);
+          i2c1_byte_send(IRLED_CUURENT_REG);
+          i2c1_byte_send(IRLED_CURRENT_100MA);
+          i2c1_send_repeated_start();
+          /* High threshold register upper byte */
+          i2c1_byte_send(WRITE_ADDR);
+          i2c1_byte_send(HIGH_THRESHOLD_UPPER_REG);
+          i2c1_byte_send(THRESHOLD_UPPER_BYTE);
+          i2c1_send_repeated_start();
+          /* High threshold register lower byte */
+          i2c1_byte_send(WRITE_ADDR);
+          i2c1_byte_send(HIGH_THRESHOLD_LOWER_REG);
+          i2c1_byte_send(THRESHOLD_LOWER_BYTE);
+          i2c1_send_repeated_start();
+          /* Enable interrupt for Proximity sensor */
+          i2c1_byte_send(WRITE_ADDR);
+          i2c1_byte_send(INTERRUPT_CONTROL_REG);
+          i2c1_byte_send(INTERRUPT_REG_SETTING);
+          i2c1_send_stop();
+          i2c1_master_disable();
+          PROXIMITY_SENSOR_IRQ_ENABLE();
+          timer_set(&debouncetimer, 0);
+          proximity_sensor_mode = 1;
+        }
+      } else {
+        /* Disable interrupt for Proximity sensor */
+        PROXIMITY_SENSOR_IRQ_DISABLE();
+        proximity_sensor_mode = 0;
+      }
+      return 1;
+
+    default:
+      return 0;
+  }
+
+}
+
+static int
+proximity_sensor_value(int type)
 {
   uint8_t data[2];
-  uint16_t value;
+  int     value;
   i2c1_master_enable();
   i2c1_send_start();
-  i2c1_byte_send(ADDR_WRITE);
+  i2c1_byte_send(WRITE_ADDR);
   i2c1_byte_send(PROXIMITY_DATA_UPPER_REG);
   i2c1_send_repeated_start();
-  i2c1_byte_send(ADDR_READ);
+  i2c1_byte_send(READ_ADDR);
   i2c1_byte_receive(data);
   i2c1_send_repeated_start();
-  i2c1_byte_send(ADDR_WRITE);
+  i2c1_byte_send(WRITE_ADDR);
   i2c1_byte_send(PROXIMITY_DATA_LOWER_REG);
   i2c1_send_repeated_start();
-  i2c1_byte_send(ADDR_READ);
+  i2c1_byte_send(READ_ADDR);
   i2c1_byte_receive(data + 1);
   i2c1_send_stop();
   i2c1_master_disable();
   value = ((uint16_t)data[0] << 8) | data[1];
-  printf("The proximity data is 0x%X\n", value);
+  return value;
 }
-
-void
-proximity_clear_irq(void)
+/*---------------------------------------------------------------------------*/
+static int
+proximity_sensor_status(int type)
 {
-  i2c1_master_enable();
-  i2c1_send_start();
-  /* Reset interrupt status register */
-  i2c1_byte_send(ADDR_WRITE);
-  i2c1_byte_send(INTERRUPT_STATUS_REG);
-  i2c1_byte_send(INTERRUPT_RESET);
-  i2c1_send_stop();
-  i2c1_master_disable();
+  return proximity_sensor_mode;
 }
+/*---------------------------------------------------------------------------*/
+SENSORS_SENSOR(proximity_sensor, PROXIMITY_SENSOR, proximity_sensor_value, proximity_sensor_configure,
+		proximity_sensor_status);
+/*---------------------------------------------------------------------------*/
