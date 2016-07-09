@@ -101,7 +101,7 @@
     return 0;                                                            \
   }                                                                      \
   uint8_t                                                                \
-  i2c##XX##_send_bytes(uint8_t *ptr, uint8_t length)                     \
+  i2c##XX##_send_bytes(const uint8_t *ptr, uint8_t length)               \
   {                                                                      \
     while(length) {                                                      \
     if(i2c##XX##_send_byte(*ptr))                                        \

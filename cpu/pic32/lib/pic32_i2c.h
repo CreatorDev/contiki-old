@@ -51,7 +51,7 @@
   uint8_t i2c##XX##_send_repeated_start();                   \
   uint8_t i2c##XX##_send_stop();                             \
   uint8_t i2c##XX##_send_byte(uint8_t );                     \
-  uint8_t i2c##XX##_send_bytes (uint8_t *, uint8_t );        \
+  uint8_t i2c##XX##_send_bytes(const uint8_t *, uint8_t );   \
   /* Set this before the final receive to send NACK. */      \
   /* The driver will reset the nack after the read */        \
   uint8_t i2c##XX##_set_nack(uint8_t bit);                   \
