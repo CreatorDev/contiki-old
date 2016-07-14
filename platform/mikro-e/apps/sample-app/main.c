@@ -69,7 +69,7 @@ PROCESS_THREAD(main_process, ev, data)
       for(i = 0; i < 20; i++)
         clock_delay_usec(50000);
 
-      leds_toggle(LEDS_RED);
+      leds_toggle(LED1);
     }
     /* ================== End example code ====================== */
   }
