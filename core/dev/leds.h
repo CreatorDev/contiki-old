@@ -69,6 +69,12 @@ void leds_blink(void);
 #ifndef LEDS_BLUE
 #define LEDS_BLUE  LEDS_YELLOW
 #endif /* LEDS_BLUE */
+#ifndef LEDS_LD1
+#define LEDS_LD1 LEDS_RED
+#endif /* LEDS_LD1 */
+#ifndef LEDS_LD2
+#define LEDS_LD2 LEDS_GREEN
+#endif /* LEDS_LD2 */
 
 #ifdef LEDS_CONF_ALL
 #define LEDS_ALL    LEDS_CONF_ALL
