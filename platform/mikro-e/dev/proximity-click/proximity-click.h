@@ -95,9 +95,9 @@ is exceeded.
     do{                                                                   \
         i2c1_master_enable();                                             \
         i2c1_send_start();                                                \
-        i2c1_byte_send(WRITE_ADDR);                                       \
-        i2c1_byte_send(INTERRUPT_STATUS_REG);                             \
-        i2c1_byte_send(INTERRUPT_RESET);                                  \
+        i2c1_send_byte(WRITE_ADDR);                                       \
+        i2c1_send_byte(INTERRUPT_STATUS_REG);                             \
+        i2c1_send_byte(INTERRUPT_RESET);                                  \
         i2c1_send_stop();                                                 \
         i2c1_master_disable();                                            \
         (void)PORTD;                                                      \
