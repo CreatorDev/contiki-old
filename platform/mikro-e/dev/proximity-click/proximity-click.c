@@ -78,34 +78,34 @@ proximity_sensor_configure(int type, int value)
           i2c1_master_enable();
           i2c1_send_start();
           /* proximity data enable and selftime enable */
-          i2c1_byte_send(WRITE_ADDR);
-          i2c1_byte_send(COMMAND_REG);
-          i2c1_byte_send(PROXIMITY_SELFTIME_EN);
+          i2c1_send_byte(WRITE_ADDR);
+          i2c1_send_byte(COMMAND_REG);
+          i2c1_send_byte(PROXIMITY_SELFTIME_EN);
           i2c1_send_repeated_start();
           /* proximity measurement rate 4  measurement pre second */
-          i2c1_byte_send(WRITE_ADDR);
-          i2c1_byte_send(PROXIMITY_RATE_REG);
-          i2c1_byte_send(PROXIMITY_RATE_4);
+          i2c1_send_byte(WRITE_ADDR);
+          i2c1_send_byte(PROXIMITY_RATE_REG);
+          i2c1_send_byte(PROXIMITY_RATE_4);
           i2c1_send_repeated_start();
           /* IRLED current 100 mA */
-          i2c1_byte_send(WRITE_ADDR);
-          i2c1_byte_send(IRLED_CUURENT_REG);
-          i2c1_byte_send(IRLED_CURRENT_100MA);
+          i2c1_send_byte(WRITE_ADDR);
+          i2c1_send_byte(IRLED_CUURENT_REG);
+          i2c1_send_byte(IRLED_CURRENT_100MA);
           i2c1_send_repeated_start();
           /* High threshold register upper byte */
-          i2c1_byte_send(WRITE_ADDR);
-          i2c1_byte_send(HIGH_THRESHOLD_UPPER_REG);
-          i2c1_byte_send(THRESHOLD_UPPER_BYTE);
+          i2c1_send_byte(WRITE_ADDR);
+          i2c1_send_byte(HIGH_THRESHOLD_UPPER_REG);
+          i2c1_send_byte(THRESHOLD_UPPER_BYTE);
           i2c1_send_repeated_start();
           /* High threshold register lower byte */
-          i2c1_byte_send(WRITE_ADDR);
-          i2c1_byte_send(HIGH_THRESHOLD_LOWER_REG);
-          i2c1_byte_send(THRESHOLD_LOWER_BYTE);
+          i2c1_send_byte(WRITE_ADDR);
+          i2c1_send_byte(HIGH_THRESHOLD_LOWER_REG);
+          i2c1_send_byte(THRESHOLD_LOWER_BYTE);
           i2c1_send_repeated_start();
           /* Enable interrupt for Proximity sensor */
-          i2c1_byte_send(WRITE_ADDR);
-          i2c1_byte_send(INTERRUPT_CONTROL_REG);
-          i2c1_byte_send(INTERRUPT_REG_SETTING);
+          i2c1_send_byte(WRITE_ADDR);
+          i2c1_send_byte(INTERRUPT_CONTROL_REG);
+          i2c1_send_byte(INTERRUPT_REG_SETTING);
           i2c1_send_stop();
           i2c1_master_disable();
           PROXIMITY_SENSOR_IRQ_ENABLE();
@@ -132,17 +132,17 @@ proximity_sensor_value(int type)
   int     value;
   i2c1_master_enable();
   i2c1_send_start();
-  i2c1_byte_send(WRITE_ADDR);
-  i2c1_byte_send(PROXIMITY_DATA_UPPER_REG);
+  i2c1_send_byte(WRITE_ADDR);
+  i2c1_send_byte(PROXIMITY_DATA_UPPER_REG);
   i2c1_send_repeated_start();
-  i2c1_byte_send(READ_ADDR);
-  i2c1_byte_receive(data);
+  i2c1_send_byte(READ_ADDR);
+  i2c1_receive_byte(data);
   i2c1_send_repeated_start();
-  i2c1_byte_send(WRITE_ADDR);
-  i2c1_byte_send(PROXIMITY_DATA_LOWER_REG);
+  i2c1_send_byte(WRITE_ADDR);
+  i2c1_send_byte(PROXIMITY_DATA_LOWER_REG);
   i2c1_send_repeated_start();
-  i2c1_byte_send(READ_ADDR);
-  i2c1_byte_receive(data + 1);
+  i2c1_send_byte(READ_ADDR);
+  i2c1_receive_byte(data + 1);
   i2c1_send_stop();
   i2c1_master_disable();
   value = ((uint16_t)data[0] << 8) | data[1];
