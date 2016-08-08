@@ -88,7 +88,13 @@
 #pragma config BWP       = OFF               // Boot Flash Write Protect
 #pragma config PWP       = OFF               // Program Flash Write Protect
 #pragma config ICESEL    = ICS_PGx2          // ICE/ICD Comm Channel Select
-#pragma config DEBUG     = OFF               // Debugger Disabled for Starter Kit 
+
+#ifdef __USE_PICKLE__
+#pragma config DEBUG     = 0x3
+#else
+#pragma config DEBUG     = OFF               // Debugger Disabled for Starter Kit
+#endif
+
 #pragma config FSRSSEL   = PRIORITY_7
 
 #ifdef __32MX795F512L__
