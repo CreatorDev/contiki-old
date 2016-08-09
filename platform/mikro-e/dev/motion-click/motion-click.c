@@ -41,27 +41,16 @@
 #include <lib/sensors.h>
 #include "motion-click.h"
 
-static struct timer debouncetimer;
 static int motion_sensor_mode;
 static int motion_sensor_state;
 /*---------------------------------------------------------------------------*/
 static void motion_sensor_read(const struct sensors_sensor *s)
 {
-  if (!motion_sensor_state) {
-    if (timer_expired(&debouncetimer)) {
-    	motion_sensor_state = 1;
-      /* Set a timer for 100ms to ignore false notifications */
-       timer_set(&debouncetimer, CLOCK_SECOND / 10);
-      /* Notify processes that Motion has been detected */
-      sensors_changed(s);
-    }
-  } else {
-    if (timer_expired(&debouncetimer)) {
-    	motion_sensor_state = 0;
-      /* Set a timer for 100ms to ignore false notifications */
-      timer_set(&debouncetimer, CLOCK_SECOND / 10);
-    }
-  }
+    motion_sensor_state = GPIO_VALUE(D,0);
+#if DEBUG
+    printf("motion_sensor: state=%d\n", motion_sensor_state);
+#endif
+    sensors_changed(s);
 }
 
 void motion_sensor_isr(void)
@@ -83,8 +72,6 @@ motion_sensor_configure(int type, int value)
     case SENSORS_ACTIVE:
       if(value) {
         if(!motion_sensor_mode) {
-          /* Enable interrupt for Motion sensor */
-          timer_set(&debouncetimer, 0);
           MOTION_SENSOR_IRQ_ENABLE();
           motion_sensor_mode = 1;
         }
@@ -109,7 +96,7 @@ motion_sensor_status(int type)
 static int
 motion_sensor_value(int type)
 {
-  return motion_sensor_state;
+  return  motion_sensor_state;
 }
 /*---------------------------------------------------------------------------*/
 SENSORS_SENSOR(motion_sensor, MOTION_SENSOR, motion_sensor_value, motion_sensor_configure,
