@@ -49,6 +49,9 @@
 #include <sensors.h>
 #include "button-sensor.h"
 #include "dev/common-clicks.h"
+#include "dev/interrupts.h"
+
+void (*interrupt_isr)(void) = NULL;
 
 #define UART_DEBUG_BAUDRATE 115200
 
@@ -123,6 +126,9 @@ ISR(_CHANGE_NOTICE_VECTOR)
     /* Proximity was detected */
     proximity_sensor_isr();
 #endif
+  }
+  else if(INTERRUPT_CHECK_IRQ() && interrupt_isr != NULL) {
+    interrupt_isr();
   }
 }
 
