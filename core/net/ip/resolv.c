@@ -229,7 +229,7 @@ struct dns_hdr {
 };
 
 /** \internal The DNS answer message structure. */
-struct dns_answer {
+struct __attribute__ ((packed)) dns_answer {
   /* DNS answer record starts with either a domain name or a pointer
    * to a name already present somewhere in the packet. */
   uint16_t type;
