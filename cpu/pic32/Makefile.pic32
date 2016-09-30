@@ -9,6 +9,9 @@ ifndef PIC32_MODEL
 $(error PIC32_MODEL not defined for the platform)
 endif
 
+### Define avrdude bootable build
+USE_AVRDUDE?=0
+
 CFLAGS += -O1 -fno-strict-aliasing -G7 -Wall -I /opt/microchip/xc32/v1.11/pic32mx/include/ $(CONTIKI_PLAT_DEFS)
 CFLAGS += -ffunction-sections
 
@@ -38,10 +41,23 @@ STRIP    = xc32-strip
 ifneq ($(PIC32_MODEL),)
 CFLAGS += -mprocessor=$(PIC32_MODEL)
 LDFLAGS += -mprocessor=$(PIC32_MODEL) -Wl,-Map=contiki-$(TARGET).map -s
+ifeq ($(USE_AVRDUDE),1)
+LDFLAGS += -Wl,--script="$(CONTIKI_CPU)/app_$(PIC32_MODEL).ld"
+endif
 LDFLAGS += -Wl,--defsym,_min_stack_size=4096 -Wl,--gc-sections
 endif
 
 ### Compilation rules
+CUSTOM_RULE_LINK=1
+
+%.$(TARGET): %.co $(PROJECT_OBJECTFILES) $(PROJECT_LIBRARIES) contiki-$(TARGET).a
+	$(TRACE_LD)
+	$(Q)$(LD) $(LDFLAGS) $(TARGET_STARTFILES) ${filter-out %.a,$^} ${filter %.a,$^} $(TARGET_LIBFILES) -o $@
+ifeq ($(USE_AVRDUDE),1)
+	xc32-objcopy --strip-all $@ 
+	xc32-objcopy --remove-section ._debug_exception $@
+endif
+	xc32-bin2hex $@
 
 %.so: $(OBJECTDIR)/%.o
 	$(LD) -shared -o $@ $^
@@ -57,3 +73,26 @@ symbols.c symbols.h:
 endif
 
 contiki-$(TARGET).a: ${addprefix $(OBJECTDIR)/,symbols.o}
+
+
+### Upload image
+#Let avrdude use defaults if port or programmer not defined
+AVRDUDE ?= avrdude
+ifdef AVRDUDE_PORT
+ AVRDUDE_PORT:=-P $(AVRDUDE_PORT)
+endif
+ifdef AVRDUDE_PROGRAMMER
+ AVRDUDE_PROGRAMMER:=-c $(AVRDUDE_PROGRAMMER)
+endif
+ifdef AVRDUDE_MCU
+ AVRDUDE_MCU:=-p $(AVRDUDE_MCU)
+else
+ AVRDUDE_MCU:=-p $(MCU)
+endif
+AVRDUDE_OPTIONS+=-C $(CONTIKI_CPU)/avrduderc.pic32 
+
+%.u: %.hex
+	$(AVRDUDE) $(AVRDUDE_MCU) $(AVRDUDE_OPTIONS) $(AVRDUDE_PORT) $(AVRDUDE_PROGRAMMER) -U flash:w:$<
+
+#%.eu: %.eep
+#	$(AVRDUDE) $(AVRDUDE_MCU) ${AVRDUDE_OPTIONS} ${AVRDUDE_PORT} ${AVRDUDE_PROGRAMMER} -U eeprom:w:$<
