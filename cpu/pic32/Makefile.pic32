@@ -10,7 +10,7 @@ $(error PIC32_MODEL not defined for the platform)
 endif
 
 ### Define avrdude bootable build
-BOOT:=1
+USE_AVRDUDE:=1
 
 CFLAGS += -O1 -fno-strict-aliasing -G7 -Wall -I /opt/microchip/xc32/v1.11/pic32mx/include/ $(CONTIKI_PLAT_DEFS)
 CFLAGS += -ffunction-sections
@@ -41,7 +41,7 @@ STRIP    = xc32-strip
 ifneq ($(PIC32_MODEL),)
 CFLAGS += -mprocessor=$(PIC32_MODEL)
 LDFLAGS += -mprocessor=$(PIC32_MODEL) -Wl,-Map=contiki-$(TARGET).map -s
-ifeq ($(BOOT),1)
+ifeq ($(USE_AVRDUDE),1)
 LDFLAGS += -Wl,--script="$(CONTIKI_CPU)/app_$(PIC32_MODEL).ld"
 endif
 LDFLAGS += -Wl,--defsym,_min_stack_size=4096 -Wl,--gc-sections
@@ -53,7 +53,7 @@ CUSTOM_RULE_LINK=1
 %.$(TARGET): %.co $(PROJECT_OBJECTFILES) $(PROJECT_LIBRARIES) contiki-$(TARGET).a
 	$(TRACE_LD)
 	$(Q)$(LD) $(LDFLAGS) $(TARGET_STARTFILES) ${filter-out %.a,$^} ${filter %.a,$^} $(TARGET_LIBFILES) -o $@
-ifeq ($(BOOT),1)
+ifeq ($(USE_AVRDUDE),1)
 	xc32-objcopy --strip-all $@ 
 	xc32-objcopy --remove-section ._debug_exception $@
 endif
