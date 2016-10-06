@@ -39,11 +39,13 @@ Platform mikro-e makefile has been updated to build either for cc2520 or for ca8
 For clicker boards using CA8210:
 
     $ cd examples/hello-world
-    $ make TARGET=mikro-e USE_CA8210=1 CHANNEL=26 PAN_ID=0xabcd USE_SERIAL_PADS=1
+    $ make TARGET=mikro-e USE_CA8210=1 CHANNEL=26 PAN_ID=0xabcd USE_SERIAL_PADS=1 USE_PICKLE=0 USE_AVRDUDE=0
     $ /opt/microchip/xc32/v1.34/bin/xc32-bin2hex hello-world.mikro-e
 
 For clicker boards using CC2520:
 
     $ cd examples/hello-world
-    $ make TARGET=mikro-e USE_CC2520=1 CHANNEL=26 PAN_ID=0abcd USE_SERIAL_PADS=1
+    $ make TARGET=mikro-e USE_CC2520=1 CHANNEL=26 PAN_ID=0abcd USE_SERIAL_PADS=1 USE_PICKLE=0 USE_AVRDUDE=0
     $ /opt/microchip/xc32/v1.34/bin/xc32-bin2hex hello-world.mikro-e
+
+Visit the [documentation page](https://docs.creatordev.io/clicker/guides/quick-start-guide/#programming-a-6lowpan-clicker) to learn about the meaning of USE_PICKLE and USE_AVRDUDE defines
