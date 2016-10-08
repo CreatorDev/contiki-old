@@ -43,6 +43,7 @@ CFLAGS += -mprocessor=$(PIC32_MODEL)
 LDFLAGS += -mprocessor=$(PIC32_MODEL) -Wl,-Map=contiki-$(TARGET).map -s
 ifeq ($(USE_AVRDUDE),1)
 LDFLAGS += -Wl,--script="$(CONTIKI_CPU)/app_$(PIC32_MODEL).ld"
+CFLAGS += -D__USE_AVRDUDE__
 endif
 LDFLAGS += -Wl,--defsym,_min_stack_size=4096 -Wl,--gc-sections
 endif

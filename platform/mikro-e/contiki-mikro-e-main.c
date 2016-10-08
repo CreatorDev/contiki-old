@@ -94,16 +94,22 @@ main(int argc, char **argv)
   serial_line_init();
 
   autostart_start(autostart_processes);
+#ifndef __USE_AVRDUDE__
   watchdog_start();
+#endif
 
   while(1) {
     do {
+#ifndef __USE_AVRDUDE__
       watchdog_periodic();
+#endif
       r = process_run();
     } while(r > 0);
+#ifndef __USE_AVRDUDE__
     watchdog_stop();
     asm volatile("wait");
     watchdog_start();
+#endif
   }
 
   return 0;
