@@ -526,7 +526,12 @@ mdns_write_announce_records(unsigned char *queryptr, uint8_t *count)
       *queryptr++ = 0;
       *queryptr++ = sizeof(uip_ipaddr_t);
 
+#if ARCH_DOESNT_NEED_ALIGNED_STRUCTS
       uip_ipaddr_copy((uip_ipaddr_t*)queryptr, &uip_ds6_if.addr_list[i].ipaddr);
+#else
+      uint8_t* aPtr = &uip_ds6_if.addr_list[i].ipaddr;
+      memcpy(queryptr, aPtr, sizeof(uip_ipaddr_t));
+#endif
       queryptr += sizeof(uip_ipaddr_t);
       ++(*count);
     }
