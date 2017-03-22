@@ -17,3 +17,20 @@ and so on.
 For more information, see the Contiki website:
 
 [http://contiki-os.org](http://contiki-os.org)
+
+=====
+
+## 6LoWPAN Clicker Build Instructions
+
+**If you would like to build the IoT Creator Kit projects, go to https://github.com/CreatorKit/build and follow the instructions there.**
+
+===
+Install the XC32 compiler from microchip: http://microchip.wikidot.com/xc32:installation
+<pre>
+$ git clone https://github.com/CreatorDev/contiki.git
+$ cd contiki
+$ git submodule init && git submodule sync && git submodule update
+</pre>
+You can now go to 'platform/mikro-e/apps/sample-app' and run:
+<pre>$ make</pre>
+to build the sample application.
